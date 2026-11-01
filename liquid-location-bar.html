@@ -1,0 +1,1724 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Liquid Location Bar</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E  %3Cdefs%3E    %3ClinearGradient id=%22bg%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22#2aa3ff%22/%3E%3Cstop offset=%220.55%22 stop-color=%22#0a6cff%22/%3E%3Cstop offset=%221%22 stop-color=%22#5e4ce6%22/%3E%3C/linearGradient%3E    %3ClinearGradient id=%22glass%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22#ffffff%22 stop-opacity=%22.55%22/%3E%3Cstop offset=%22.5%22 stop-color=%22#ffffff%22 stop-opacity=%22.22%22/%3E%3Cstop offset=%221%22 stop-color=%22#ffffff%22 stop-opacity=%22.32%22/%3E%3C/linearGradient%3E    %3ClinearGradient id=%22rim%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22#fff%22 stop-opacity=%22.95%22/%3E%3Cstop offset=%22.4%22 stop-color=%22#fff%22 stop-opacity=%22.25%22/%3E%3Cstop offset=%221%22 stop-color=%22#fff%22 stop-opacity=%22.7%22/%3E%3C/linearGradient%3E    %3Cfilter id=%22sh%22 x=%22-20%25%22 y=%22-20%25%22 width=%22140%25%22 height=%22160%25%22%3E%3CfeDropShadow dx=%220%22 dy=%2210%22 stdDeviation=%2212%22 flood-color=%22#001a4d%22 flood-opacity=%22.35%22/%3E%3C/filter%3E  %3C/defs%3E  %3Crect width=%22512%22 height=%22512%22 rx=%22114%22 fill=%22url(#bg)%22/%3E  %3Ccircle cx=%22120%22 cy=%22110%22 r=%22160%22 fill=%22#fff%22 opacity=%22.10%22/%3E  %3Cpath d=%22M256 70c-56 0-100 43-100 98 0 70 100 162 100 162s100-92 100-162c0-55-44-98-100-98z%22 fill=%22#fff%22 filter=%22url(#sh)%22/%3E  %3Ccircle cx=%22256%22 cy=%22168%22 r=%2238%22 fill=%22#0a6cff%22/%3E  %3Cg filter=%22url(#sh)%22%3E    %3Crect x=%2276%22 y=%22344%22 width=%22360%22 height=%2292%22 rx=%2246%22 fill=%22url(#glass)%22/%3E    %3Crect x=%2277.5%22 y=%22345.5%22 width=%22357%22 height=%2289%22 rx=%2244.5%22 fill=%22none%22 stroke=%22url(#rim)%22 stroke-width=%223%22/%3E  %3C/g%3E  %3Ccircle cx=%22128%22 cy=%22390%22 r=%2215%22 fill=%22#fff%22/%3E  %3Crect x=%22160%22 y=%22370%22 width=%22150%22 height=%2216%22 rx=%228%22 fill=%22#fff%22 opacity=%22.95%22/%3E  %3Crect x=%22160%22 y=%22396%22 width=%2296%22 height=%2212%22 rx=%226%22 fill=%22#fff%22 opacity=%22.7%22/%3E  %3Crect x=%22330%22 y=%22372%22 width=%2272%22 height=%2236%22 rx=%2218%22 fill=%22#fff%22 opacity=%22.9%22/%3E%3C/svg%3E">
+<script src="https://cdn.jsdelivr.net/npm/mp4-muxer@5.2.2/build/mp4-muxer.js"></script>
+<script type="module">
+  import * as MB from 'https://cdn.jsdelivr.net/npm/mediabunny@1.65.0/dist/bundles/mediabunny.min.mjs';
+  window.MB = MB;
+</script>
+<style>
+  :root{
+    --bg:#f2f2f7; --card:#ffffff; --label:#000000; --label2:rgba(60,60,67,.60); --label3:rgba(60,60,67,.30);
+    --sep:rgba(60,60,67,.22); --fill:rgba(120,120,128,.16); --fill2:rgba(120,120,128,.12); --press:rgba(120,120,128,.20);
+    --blue:#007aff; --green:#34c759; --red:#ff3b30; --stage:#e3e3e8;
+    --glass:rgba(255,255,255,.62); --glassEdge:rgba(255,255,255,.85); --glassShadow:0 8px 30px rgba(0,0,0,.12),0 1px 3px rgba(0,0,0,.08);
+    --thumb:#ffffff;
+    --ui:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","PingFang SC","Helvetica Neue","Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+    --spring:cubic-bezier(.34,1.56,.64,1);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#000000; --card:#1c1c1e; --label:#ffffff; --label2:rgba(235,235,245,.60); --label3:rgba(235,235,245,.30);
+      --sep:rgba(84,84,88,.65); --fill:rgba(120,120,128,.36); --fill2:rgba(120,120,128,.24); --press:rgba(120,120,128,.32);
+      --blue:#0a84ff; --green:#30d158; --red:#ff453a; --stage:#0d0d0f;
+      --glass:rgba(44,44,48,.55); --glassEdge:rgba(255,255,255,.22); --glassShadow:0 8px 30px rgba(0,0,0,.5),0 1px 3px rgba(0,0,0,.4);
+      --thumb:#ffffff;
+    }
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;height:100%}
+  body{background:var(--bg);color:var(--label);font-family:var(--ui);font-size:17px;letter-spacing:-.2px;-webkit-font-smoothing:antialiased}
+  .app{--side:420px;position:relative;display:grid;grid-template-columns:var(--side) 1fr;height:100vh;overflow:hidden}
+  html,body{overflow:hidden}
+  .resizer{position:absolute;top:0;bottom:0;left:calc(var(--side) - 6px);width:12px;z-index:20;cursor:col-resize;touch-action:none}
+  .resizer::after{content:"";position:absolute;top:50%;left:4px;width:4px;height:44px;margin-top:-22px;border-radius:2px;background:var(--label3);opacity:0;transition:opacity .2s,height .3s var(--spring),margin .3s var(--spring),background .2s}
+  .resizer:hover::after,.resizer.dragging::after{opacity:1}
+  .resizer.dragging::after{height:72px;margin-top:-36px;background:var(--blue)}
+  body.resizing{cursor:col-resize;user-select:none}
+  body.resizing canvas{pointer-events:none}
+  aside{overflow-y:auto;padding:22px 18px 80px;background:var(--bg);border-right:.5px solid var(--sep)}
+  main{position:relative;display:flex;flex-direction:column;min-width:0;height:100vh;overflow:hidden;background:var(--stage)}
+
+  h1{font-size:32px;font-weight:700;letter-spacing:.2px;margin:8px 4px 2px}
+  .sub{color:var(--label2);font-size:15px;margin:0 4px 6px}
+  section{margin:0;padding:0}
+  h2{display:flex;align-items:baseline;gap:8px;font-size:22px;font-weight:700;letter-spacing:.1px;margin:30px 4px 10px}
+  h2 em{font-style:normal;font-size:12px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--label2)}
+  h3{font-size:13px;font-weight:400;letter-spacing:0;text-transform:uppercase;color:var(--label2);margin:22px 16px 7px}
+  .legal{margin:40px 16px 0;text-align:center;font-size:12px;line-height:1.5;color:var(--label2)}
+  .hint{font-size:13px;line-height:1.45;color:var(--label2);margin:9px 16px 22px}
+
+  .card{background:var(--card);border-radius:22px;overflow:hidden}
+  .card > *{position:relative}
+  .card > *:not(.firstVis)::before{content:"";position:absolute;top:0;left:16px;right:0;height:.5px;background:var(--sep);pointer-events:none}
+  .card[hidden]{display:none}
+
+  label.row{display:grid;grid-template-columns:minmax(84px,max-content) 1fr;align-items:center;gap:12px;min-height:46px;padding:6px 16px;margin:0}
+  label.row > span:first-child{color:var(--label);white-space:nowrap}
+  .toggleRow{display:flex !important;flex-direction:row-reverse;justify-content:space-between;align-items:center;gap:12px;min-height:46px;padding:6px 16px;cursor:pointer}
+
+  select, input[type=text], input[type=number], textarea{font:inherit;font-size:17px;color:var(--label2);background:transparent;border:none;outline:none;border-radius:0;padding:0}
+  label.row select{justify-self:end;max-width:100%;appearance:none;-webkit-appearance:none;text-align:right;text-align-last:right;padding:6px 22px 6px 6px;cursor:pointer;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='16' viewBox='0 0 10 16'><path d='M1.5 6 5 2.5 8.5 6M1.5 10 5 13.5 8.5 10' fill='none' stroke='%238e8e93' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat:no-repeat;background-position:right 2px center;background-size:10px 16px}
+  select option{color:#000;background:#fff}
+  label.row input[type=text], label.row input[type=number]{justify-self:end;width:100%;max-width:180px;text-align:right;padding:6px 0}
+  input[type=number]::-webkit-inner-spin-button{opacity:.4}
+  textarea{display:block;width:100%;min-height:150px;padding:12px 16px;color:var(--label);font-size:15px;line-height:1.45;resize:vertical}
+  #tplText{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace !important;font-size:12px !important;min-height:220px}
+  ::placeholder{color:var(--label3)}
+
+  /* switches with a liquid glass thumb while pressed */
+  input[type=checkbox]{appearance:none;-webkit-appearance:none;flex:none;position:relative;width:51px;height:31px;border-radius:16px;margin:0;background:var(--fill);cursor:pointer;transition:background .25s ease}
+  input[type=checkbox]:checked{background:var(--green)}
+  input[type=checkbox]::before{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:14px;background:var(--thumb);
+    box-shadow:0 3px 8px rgba(0,0,0,.15),0 3px 1px rgba(0,0,0,.06);transition:left .35s var(--spring),width .3s var(--spring),background .2s,box-shadow .2s,transform .3s var(--spring)}
+  input[type=checkbox]:checked::before{left:22px}
+  .toggleRow:active input[type=checkbox]::before, input[type=checkbox]:active::before{width:36px;transform:scale(1.18);background:rgba(255,255,255,.42);
+    box-shadow:inset 0 0 0 .6px rgba(255,255,255,.9),inset 0 6px 10px rgba(255,255,255,.55),0 4px 14px rgba(0,0,0,.18)}
+  .toggleRow:active input[type=checkbox]:checked::before, input[type=checkbox]:checked:active::before{left:13px}
+
+  /* sliders: track with fill, glass thumb while dragging */
+  input[type=range]{appearance:none;-webkit-appearance:none;width:100%;height:28px;background:transparent;margin:0;cursor:pointer;--p:50%}
+  input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:linear-gradient(to right,var(--blue) 0 var(--p),var(--fill) var(--p) 100%)}
+  input[type=range]::-moz-range-track{height:4px;border-radius:2px;background:var(--fill)}
+  input[type=range]::-moz-range-progress{height:4px;border-radius:2px;background:var(--blue)}
+  input[type=range]::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:26px;height:26px;margin-top:-11px;border-radius:50%;background:var(--thumb);border:none;
+    box-shadow:0 3px 8px rgba(0,0,0,.18),0 0 0 .5px rgba(0,0,0,.06);transition:transform .3s var(--spring),background .2s,box-shadow .2s}
+  input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:var(--thumb);border:none;box-shadow:0 3px 8px rgba(0,0,0,.18)}
+  input[type=range]:active::-webkit-slider-thumb{transform:scale(1.45,1.3);background:rgba(255,255,255,.40);
+    box-shadow:inset 0 0 0 .6px rgba(255,255,255,.95),inset 0 5px 9px rgba(255,255,255,.6),0 5px 16px rgba(0,0,0,.2)}
+  .rangeWrap{display:flex;align-items:center;gap:12px;min-width:0}
+  .rangeWrap input[type=range]{flex:1;min-width:0}
+  label.row .rangeWrap input.rangeNum{flex:none;width:64px;max-width:64px;padding:5px 8px;border-radius:9px;background:var(--fill2);color:var(--label);font-size:15px;text-align:right;font-variant-numeric:tabular-nums}
+  .rangeWrap input.rangeNum::-webkit-inner-spin-button{display:none}
+  label.row .rangeWrap input.rangeNum:focus{box-shadow:0 0 0 2px var(--blue)}
+
+  input[type=color]{justify-self:end;appearance:none;-webkit-appearance:none;width:30px;height:30px;padding:0;border:none;border-radius:50%;background:none;cursor:pointer}
+  input[type=color]::-webkit-color-swatch-wrapper{padding:0}
+  input[type=color]::-webkit-color-swatch{border:none;border-radius:50%;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.15)}
+
+  /* liquid glass segmented control */
+  .modeBox{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:0;margin:8px;padding:3px;border-radius:18px;background:var(--fill2);user-select:none}
+  .modeBox label{position:relative;z-index:1;display:block;padding:10px 6px 9px;text-align:center;font-size:15px;font-weight:600;line-height:1.25;cursor:pointer;color:var(--label);transition:transform .35s var(--spring)}
+  .modeBox label small{display:block;font-size:12px;font-weight:400;color:var(--label2);margin-top:2px}
+  .modeBox label br{display:none}
+  .modeBox input{position:absolute;opacity:0;pointer-events:none}
+  .segThumb{position:absolute;z-index:0;top:3px;bottom:3px;left:3px;border-radius:15px;background:var(--card);
+    box-shadow:0 3px 8px rgba(0,0,0,.12),0 3px 1px rgba(0,0,0,.04);transition:left .45s var(--spring),width .45s var(--spring),transform .35s var(--spring),background .25s,box-shadow .25s}
+  .modeBox.pressing .segThumb{transform:scale(1.07,1.12);background:rgba(255,255,255,.38);-webkit-backdrop-filter:blur(3px) saturate(1.8);backdrop-filter:blur(3px) saturate(1.8);
+    box-shadow:inset 0 0 0 .7px rgba(255,255,255,.95),inset 0 8px 14px rgba(255,255,255,.55),inset 0 -6px 12px rgba(255,255,255,.18),0 8px 22px rgba(0,0,0,.18)}
+  .modeBox.pressing label:has(input:checked){transform:scale(1.04)}
+
+  /* glass capsule buttons */
+  .btns{display:flex;flex-wrap:wrap;gap:8px;padding:12px 14px}
+  button{font:inherit;font-size:15px;font-weight:600;padding:9px 16px;border-radius:999px;border:none;cursor:pointer;color:var(--blue);background:var(--fill2);
+    box-shadow:inset 0 0 0 .5px rgba(255,255,255,.18);transition:transform .35s var(--spring),filter .2s,background .2s}
+  button.primary{background:var(--blue);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 2px 8px rgba(0,122,255,.28)}
+  button:active:not(:disabled){transform:scale(1.06);filter:brightness(1.08) saturate(1.1)}
+  button:disabled{opacity:.35;cursor:default}
+
+  /* file rows */
+  .drop{display:flex;align-items:center;gap:12px;min-height:58px;padding:9px 16px;cursor:pointer;transition:background .2s}
+  .drop:active{background:var(--press)}
+  .drop .ico{flex:none;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:#fff}
+  .drop .ico svg{width:18px;height:18px}
+  .drop .txt{flex:1;min-width:0}
+  .drop .dt{display:block;color:var(--label)}
+  .drop .ds{display:block;font-size:13px;color:var(--label2);margin-top:1px}
+  .drop::after{content:"";flex:none;width:8px;height:8px;border-top:2px solid var(--label3);border-right:2px solid var(--label3);transform:rotate(45deg);margin-right:4px}
+  .drop.over{background:color-mix(in srgb,var(--blue) 14%,transparent)}
+
+  .info,#status,#tplInfo,#mapStatus{font-size:14px;line-height:1.45;color:var(--label2);padding:11px 16px;margin:0}
+  .info:empty,#status:empty,#tplInfo:empty,#mapStatus:empty{display:none}
+  #mapStatus.bad{color:var(--red)}
+  #clipSel{display:block;width:100%;border:none;background:transparent;color:var(--label);font-size:15px;padding:6px 0;outline:none}
+  #clipSel option{padding:9px 16px;color:var(--label);background:transparent;border-radius:0}
+  #clipSel option:checked{background:color-mix(in srgb,var(--blue) 18%,transparent);color:var(--label)}
+  #clipSel option:disabled{color:var(--label3)}
+  .progress{height:4px;background:var(--fill);margin:4px 16px 12px;border-radius:2px;overflow:hidden;display:none}
+  .progress div{height:100%;width:0;background:var(--blue);border-radius:2px;transition:width .2s}
+
+  /* stage and floating glass player */
+  .stage{position:relative;flex:1;display:flex;align-items:center;justify-content:center;padding:28px 28px 112px;min-height:0;overflow:hidden}
+  .stage canvas{flex:none;border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.22)}
+  .bar{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);width:min(680px,calc(100% - 48px));display:flex;align-items:center;gap:14px;padding:10px 20px 10px 10px;border-radius:999px;
+    background:var(--glass);-webkit-backdrop-filter:blur(28px) saturate(1.9);backdrop-filter:blur(28px) saturate(1.9);
+    box-shadow:var(--glassShadow),inset 0 0 0 .6px var(--glassEdge),inset 0 1px 0 var(--glassEdge)}
+  .bar input[type=range]{flex:1}
+  #play{flex:none;width:46px;height:46px;padding:0;border-radius:50%;display:grid;place-items:center;color:var(--label);background:rgba(255,255,255,.35);
+    box-shadow:inset 0 0 0 .6px var(--glassEdge),inset 0 6px 10px rgba(255,255,255,.35),0 2px 8px rgba(0,0,0,.12)}
+  #play svg{width:20px;height:20px;fill:currentColor}
+  .clock{min-width:150px;text-align:right;color:var(--label2);font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+  body:not(.alphaMode) .onlyAlpha{display:none !important}
+  body.alphaMode .onlyComp{display:none !important}
+  body:not(.splitInfo) .onlySplit{display:none !important}
+  body.splitInfo .onlyJoined{display:none !important}
+  body:not(.splitTime) .onlyTime{display:none !important}
+  body:not(.fadeIn) .onlyIn{display:none !important}
+  body:not(.fadeOut) .onlyOut{display:none !important}
+  body:not(.multiClip) .onlyMulti{display:none !important}
+  body:not(.perClip) .onlyPerClip{display:none !important}
+  body:not(.fontCustom) .onlyCustomFont{display:none !important}
+  @media (max-width:900px){
+    html,body{overflow:auto}
+    .app{grid-template-columns:1fr;height:auto;overflow:visible}
+    .resizer{display:none}
+    aside{border-right:none}
+    main{height:70vh}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+  <h1>Liquid Location Bar</h1>
+  <p class="sub">v<span id="ver"></span> · Liquid glass location overlay for your footage</p>
+
+  <section>
+    <h2>模板<em>Template</em></h2>
+    <div class="btns">
+      <button class="primary" id="tplSave">导出模板</button>
+      <button id="tplLoad">载入模板</button>
+      <button id="tplToggle">查看文本</button>
+    </div>
+    <input type="file" id="tplFile" accept=".llb,.json,.txt,application/json,text/plain" hidden>
+    <div id="tplBox" style="display:none">
+      <textarea id="tplText" spellcheck="false" style="min-height:220px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px"></textarea>
+      <div class="btns"><button id="tplCopy">复制</button><button id="tplApply">应用文本</button><button id="tplRefresh">刷新为当前设置</button></div>
+    </div>
+    <div class="info" id="tplInfo"></div>
+    <p class="hint">模板是一个纯文本文件（.llb），记录这一次的全部调整：样式、位置、尺寸、间距、字体、淡入淡出、地图、地名列表、时间偏移，以及每段视频的开拍时间。下次载入模板，再拖入 GPX 和视频即可。GPX 和视频本身不会存进模板。</p>
+  </section>
+
+  <section>
+    <h2>输出方式<em>Mode</em></h2>
+    <div class="modeBox">
+      <label><input type="radio" name="mode" value="alpha" checked>透明背景<br><small>导出叠加层，拖进视频编辑软件</small></label>
+      <label><input type="radio" name="mode" value="comp">合成进视频<br><small>真实模糊与折射</small></label>
+    </div>
+    <p class="hint onlyAlpha">导出带透明通道的 WebM，放在视频编辑软件的叠加轨道（画中画轨道）即可。透明叠加层看不到身后的画面，所以玻璃是半透明磨砂的样子，没有真实的背景模糊。</p>
+    <p class="hint onlyComp">把玻璃直接合成进你的原视频，背景模糊和边缘折射都是真实的，导出带原声的 MP4。</p>
+  </section>
+
+  <section>
+    <h2>素材<em>Files</em></h2>
+    <div class="drop" id="dropGpx"><span class="ico" style="background:#34c759"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-5.4-6-10.5A6 6 0 0 1 18 10.5C18 15.6 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.2"/></svg></span><span class="txt"><span class="dt">选择 GPX 轨迹</span><span class="ds">点击选择，或把 .gpx 拖进页面</span></span></div>
+    <div class="drop" id="dropVid"><span class="ico" style="background:#007aff"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2.5"/><path d="M16 10.5 21 8v8l-5-2.5"/></svg></span><span class="txt"><span class="dt">添加视频</span><span class="ds">可多选，也可以直接拖进页面</span></span></div>
+    <input type="file" id="fileGpx" accept=".gpx,application/gpx+xml,text/xml" hidden>
+    <input type="file" id="fileVid" accept="video/*,.mp4,.mov" multiple hidden>
+    <p class="hint">透明背景模式下视频不是必需的，加进来是为了预览和对齐时间。</p>
+    <div class="info" id="info">尚未载入轨迹</div>
+    <h3>时间对齐</h3>
+    <select id="clipSel" size="4" style="width:100%"></select>
+    <label class="row"><span>开拍时间</span><input type="text" id="clipStart" placeholder="22:48:10"></label>
+    <div class="info" id="clipHow"></div>
+    <label class="row"><span>全局偏移(秒)</span><input type="number" id="offset" value="0" step="0.5"></label>
+    <label class="row"><span>时区 UTC+</span><input type="number" id="tz" value="10" step="0.5"></label>
+    <p class="hint">开拍时间先从文件名（如 VID20261026224810）读取，读不到再用视频自带的时间信息。地图上的点比画面早或晚时，调“全局偏移”。</p>
+  </section>
+
+  <section>
+    <h2>信息<em>Info</em></h2>
+    <div class="checks">
+      <label><input type="checkbox" id="showPlace" checked> 地名</label>
+      <label><input type="checkbox" id="showTime" checked> 时间</label>
+      <label><input type="checkbox" id="showSpeed" checked> 速度</label>
+      <label><input type="checkbox" id="showAlt" checked> 海拔</label>
+      <label><input type="checkbox" id="showCoords" checked> 坐标</label>
+    </div>
+    <h3>位置</h3>
+    <div class="checks" style="grid-template-columns:1fr"><label><input type="checkbox" id="splitInfo"> 地名与数据拆成两个浮窗</label></div>
+    <label class="row onlyJoined"><span>信息</span>
+      <select id="infoCorner"><option value="tl">左上</option><option value="tr" selected>右上</option><option value="bl">左下</option><option value="br">右下</option></select></label>
+    <label class="row onlySplit"><span>地名</span>
+      <select id="placeCorner"><option value="tl">左上</option><option value="tr" selected>右上</option><option value="bl">左下</option><option value="br">右下</option></select></label>
+    <label class="row onlySplit"><span>数据</span>
+      <select id="dataCorner"><option value="tl">左上</option><option value="tr">右上</option><option value="bl" selected>左下</option><option value="br">右下</option></select></label>
+    <div class="checks" style="grid-template-columns:1fr"><label><input type="checkbox" id="splitTime"> 时间单独成窗</label></div>
+    <label class="row onlyTime"><span>时间</span>
+      <select id="timeCorner"><option value="tl">左上</option><option value="tr">右上</option><option value="bl">左下</option><option value="br" selected>右下</option></select></label>
+    <label class="row"><span>同角排列</span>
+      <select id="stack"><option value="row">横向并排</option><option value="column">纵向叠放</option></select></label>
+    <p class="hint">几个浮窗选同一个角时，会按“同角排列”挨着摆放。地图的位置在“显示”里设置。</p>
+    <h3>格式</h3>
+    <label class="row"><span>坐标格式</span>
+      <select id="coordFmt"><option value="dms">度分秒</option><option value="dec">小数</option></select></label>
+    <label class="row"><span>标签语言</span>
+      <select id="lang"><option value="en">English</option><option value="zh">中文</option></select></label>
+    <label class="row"><span>速度单位</span>
+      <select id="speedUnit"><option value="kph">kph</option><option value="km/h">km/h</option><option value="mph">mph</option></select></label>
+    <label class="row"><span>数据刷新</span>
+      <select id="refresh"><option value="0.5">每 0.5 秒</option><option value="1" selected>每 1 秒</option><option value="2">每 2 秒</option></select></label>
+    <h3>排版</h3>
+    <label class="row"><span>左右内边距</span><input type="range" id="padX" min="8" max="60" step="1" value="24"></label>
+    <label class="row"><span>上下内边距</span><input type="range" id="padY" min="6" max="50" step="1" value="18"></label>
+    <label class="row"><span>数据之间</span><input type="range" id="itemGap" min="8" max="100" step="1" value="34"></label>
+    <label class="row"><span>数值与标签</span><input type="range" id="labelGap" min="0" max="24" step="0.5" value="7"></label>
+    <label class="row"><span>地名与数据</span><input type="range" id="placeGap" min="4" max="50" step="1" value="16"></label>
+    <p class="hint">玻璃宽度会跟着文字变化：数值或地名一变，旧文字先淡出，玻璃平滑伸缩，新文字再淡入。</p>
+  </section>
+
+  <section>
+    <h2>显示<em>Display</em></h2>
+    <label class="row"><span>整体大小</span><input type="range" id="scale" min="0.5" max="1.8" step="0.05" value="1"></label>
+    <label class="row"><span>边距</span><input type="range" id="margin" min="16" max="200" step="2" value="48"></label>
+    <label class="row"><span>两窗间距</span><input type="range" id="gap" min="6" max="60" step="1" value="14"></label>
+    <h3>地图</h3>
+    <div class="checks" style="grid-template-columns:1fr"><label><input type="checkbox" id="showMap" checked> 显示地图浮窗</label></div>
+    <label class="row"><span>地图位置</span>
+      <select id="mapCorner"><option value="tl" selected>左上</option><option value="tr">右上</option><option value="bl">左下</option><option value="br">右下</option></select></label>
+    <label class="row"><span>地图尺寸</span><input type="range" id="mapSize" min="140" max="320" step="2" value="214"></label>
+    <label class="row"><span>底图</span>
+      <select id="basemap">
+        <option value="gray" selected>Esri 浅灰（简洁）</option>
+        <option value="streets">Esri 街道（彩色，带路名）</option>
+        <option value="none">无底图（轨迹直接画在玻璃上）</option>
+      </select></label>
+    <div id="mapStatus"></div>
+    <label class="row"><span>底图透明度</span><input type="range" id="mapOpacity" min="0.2" max="1" step="0.05" value="0.92"></label>
+    <label class="row"><span>视角</span>
+      <select id="mapMode"><option value="follow">跟随当前位置</option><option value="fit">显示全程</option></select></label>
+    <label class="row"><span>跟随缩放</span><input type="range" id="zoom" min="13" max="18" step="0.25" value="15.5"></label>
+  </section>
+
+  <section>
+    <h2>液态玻璃<em>Glass</em></h2>
+    <label class="row"><span>色调</span>
+      <select id="tint"><option value="clear">通透</option><option value="light" selected>浅色</option><option value="dark">深色</option></select></label>
+    <label class="row onlyComp"><span>模糊</span><input type="range" id="blur" min="0" max="48" step="1" value="22"></label>
+    <label class="row onlyComp"><span>边缘折射</span><input type="range" id="refr" min="0" max="2" step="0.05" value="1"></label>
+    <label class="row"><span>高光</span><input type="range" id="hl" min="0" max="1.5" step="0.05" value="1"></label>
+    <label class="row"><span>圆角</span><input type="range" id="radius" min="8" max="60" step="1" value="34"></label>
+    <label class="row"><span>强调色</span><input type="color" id="accent" value="#0a84ff"></label>
+    <div class="checks" style="grid-template-columns:1fr">
+      <label><input type="checkbox" id="shadow" checked> 浮窗投影</label>
+    </div>
+    <h3>文字</h3>
+    <label class="row"><span>字体</span>
+      <select id="font"><option value="sans" selected>无衬线</option><option value="serif">衬线 Times</option><option value="custom">自选字体文件</option></select></label>
+    <div class="drop onlyCustomFont" id="fontPick"><span class="ico" style="background:#5856d6"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19 9.5 5h1L16 19M6.2 14h7.6"/><path d="M17 11.5c.8-.6 1.6-.9 2.4-.9 1.3 0 2.1.8 2.1 2.1V19M21.5 15.2c-2.6 0-4.4.6-4.4 2.1 0 1 .7 1.7 1.8 1.7 1.3 0 2.6-1 2.6-2.4"/></svg></span><span class="txt"><span class="dt">选择字体文件</span><span class="ds" id="fontStatus">未选择，暂用系统字体</span></span></div>
+    <input type="file" id="fontFile" accept=".ttf,.otf,.ttc,.woff,.woff2,font/*" multiple hidden>
+    <label class="row"><span>字体大小</span><input type="range" id="fs" min="0.7" max="1.6" step="0.05" value="1"></label>
+    <label class="row"><span>文字颜色</span>
+      <select id="textColor"><option value="white">白色</option><option value="black">黑色</option></select></label>
+    <h3>淡入淡出</h3>
+    <label class="row onlyMulti"><span>多个视频</span>
+      <select id="fadeScope"><option value="shared">所有视频统一</option><option value="perClip">每段视频独立</option></select></label>
+    <div class="info onlyPerClip" id="fadeTarget"></div>
+    <div class="checks" style="grid-template-columns:1fr"><label><input type="checkbox" id="fadeIn"> 浮窗淡入</label></div>
+    <label class="row onlyIn"><span>开始于(秒)</span><input type="number" id="inStart" value="0" step="0.1" min="0"></label>
+    <label class="row onlyIn"><span>淡入时长(秒)</span><input type="number" id="inDur" value="0.6" step="0.1" min="0.1"></label>
+    <div class="checks" style="grid-template-columns:1fr"><label><input type="checkbox" id="fadeOut"> 浮窗淡出</label></div>
+    <label class="row onlyOut"><span>距结束(秒)</span><input type="number" id="outBefore" value="1" step="0.1" min="0"></label>
+    <label class="row onlyOut"><span>淡出时长(秒)</span><input type="number" id="outDur" value="0.6" step="0.1" min="0.1"></label>
+    <label class="row"><span>依次间隔(秒)</span><input type="number" id="stagger" value="0.12" step="0.02" min="0"></label>
+    <p class="hint">时间都相对于当前片段（或导出范围）的开头和结尾计算。“距结束”是指淡出在结尾前多少秒开始。“依次间隔”让几个浮窗一个接一个出现和消失，设为 0 就同时进行。</p>
+    <p class="hint onlyMulti">添加了多段视频时，可以选“所有视频统一”用同一套淡入淡出，或选“每段视频独立”：在“素材”的列表里选中哪一段，这里改的就是哪一段，导出时每段用各自的设置。</p>
+  </section>
+
+  <section>
+    <h2>地名<em>Places</em></h2>
+    <label class="row"><span>主名称</span>
+      <select id="gran"><option value="road">街道名</option><option value="area">区域名</option></select></label>
+    <div class="btns"><button id="geocode">自动查询地名</button><button id="applyPlaces">应用修改</button></div>
+    <textarea id="places" placeholder="每行一条：时间 | 主名称 | 副标题&#10;22:47:17 | Stanley Street | Woolloongabba, Brisbane&#10;22:50:10 | Logan Road | Greenslopes, Brisbane&#10;&#10;不写时间则从开头一直显示：&#10;South Bank | Brisbane, Queensland"></textarea>
+    <p class="hint">自动查询使用 OpenStreetMap，大约每 150 米查一次，查完可直接改字，再点“应用修改”。</p>
+  </section>
+
+  <section>
+    <h2>导出<em>Export</em></h2>
+    <label class="row onlyAlpha"><span>时间范围</span>
+      <select id="alphaRange">
+        <option value="clip">当前视频片段</option>
+        <option value="track">整条轨迹</option>
+        <option value="test">前 10 秒（先测试透明效果）</option>
+      </select></label>
+    <label class="row onlyAlpha"><span>画布尺寸</span>
+      <select id="canvasSize">
+        <option value="auto">跟随当前视频</option>
+        <option value="1080x1920">1080×1920 竖屏</option>
+        <option value="1920x1080">1920×1080 横屏</option>
+        <option value="2160x3840">2160×3840 竖屏 4K</option>
+        <option value="3840x2160">3840×2160 横屏 4K</option>
+      </select></label>
+    <label class="row onlyComp"><span>分辨率</span>
+      <select id="res"><option value="orig">原片</option><option value="1080" selected>1080p</option><option value="720">720p</option></select></label>
+    <label class="row"><span>帧率 FPS</span>
+      <select id="fps"><option>24</option><option>25</option><option selected>30</option><option>60</option></select></label>
+    <div class="checks onlyComp" style="grid-template-columns:1fr"><label><input type="checkbox" id="keepAudio" checked> 保留原声</label></div>
+    <div class="btns">
+      <button class="primary onlyAlpha" id="exportAlpha">导出透明叠加层</button>
+      <button class="primary onlyComp" id="exportCur">导出当前片段</button>
+      <button class="onlyComp" id="exportAll">全部导出</button>
+      <button id="cancel" disabled>取消</button>
+      <button id="png">导出当前帧 PNG</button>
+    </div>
+    <div class="progress" id="prog"><div></div></div>
+    <div id="status"></div>
+    <p class="hint onlyAlpha">画布尺寸和你的编辑项目一致时，拖进去就会自动对齐位置。不同视频编辑软件对透明视频的支持不一样，建议先导出 10 秒测试。</p>
+    <p class="hint onlyComp">帧率请选和原片一致。成片带 _glass 后缀，直接拖进视频编辑软件即可。</p>
+  </section>
+  <footer class="legal">Copyright © 2026 ShinyAkira.<br>Released under the MIT License.</footer>
+</aside>
+
+<div class="resizer" id="resizer" title="拖动调整设置栏宽度"></div>
+<main>
+  <div class="stage"><canvas id="cv" width="540" height="960"></canvas></div>
+  <div class="bar">
+    <button id="play" aria-label="播放"></button>
+    <input type="range" id="scrub" min="0" max="1000" value="0">
+    <div class="clock" id="clock">--:--</div>
+  </div>
+</main>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const SERIF = '"Times New Roman","Songti SC","STSong","SimSun","Noto Serif SC",serif';
+const SANS = '-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","PingFang SC","Helvetica Neue","Segoe UI","Microsoft YaHei",Arial,sans-serif';
+const esri = svc => (z,x,y)=>`https://server.arcgisonline.com/ArcGIS/rest/services/${svc}/MapServer/tile/${z}/${y}/${x}`;
+const BASEMAPS = {
+  gray:{url:esri('Canvas/World_Light_Gray_Base'), maxZ:16, dark:false, attr:'© Esri'},
+  streets:{url:esri('World_Street_Map'), maxZ:19, dark:false, attr:'© Esri'}
+};
+const USER_FONT = 'LLB User Font';
+const CUSTOM_FONT = `"${USER_FONT}",` + SANS;
+const LABELS = {en:{time:'TIME',speed:'SPEED',alt:'ALTITUDE'}, zh:{time:'时间',speed:'速度',alt:'海拔'}};
+const TINTS = {
+  clear:{fill:'rgba(255,255,255,0.05)', fake:'rgba(255,255,255,0.10)', b:1.02, sat:1.7},
+  light:{fill:'rgba(255,255,255,0.17)', fake:'rgba(255,255,255,0.24)', b:1.08, sat:1.5},
+  dark:{fill:'rgba(14,14,18,0.30)', fake:'rgba(16,16,20,0.44)', b:0.82, sat:1.35}
+};
+const INKS = {
+  white:{ink:'#ffffff', sub:'rgba(255,255,255,0.72)', faint:'rgba(255,255,255,0.26)', shadow:'rgba(0,0,0,0.40)'},
+  black:{ink:'#111111', sub:'rgba(17,17,17,0.62)', faint:'rgba(0,0,0,0.16)', shadow:'rgba(255,255,255,0.40)'}
+};
+const INFO_W = 340, MAP_INSET = 7, IPAD = 22;
+
+const st = {track:null, places:[], clips:[], cur:-1, t:0, vt:0, playing:false, cancel:false, busy:false, fit:null};
+
+/* ---------- geometry ---------- */
+function project(lat, lon){
+  const s = Math.sin(lat*Math.PI/180);
+  return {x:(lon+180)/360, y:0.5 - Math.log((1+s)/(1-s))/(4*Math.PI)};
+}
+function hav(a, b){
+  const R = 6371008.8, r = Math.PI/180;
+  const dLat = (b.lat-a.lat)*r, dLon = (b.lon-a.lon)*r;
+  const h = Math.sin(dLat/2)**2 + Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dLon/2)**2;
+  return 2*R*Math.asin(Math.min(1, Math.sqrt(h)));
+}
+
+/* ---------- GPX ---------- */
+function parseGPX(text){
+  const doc = new DOMParser().parseFromString(text, 'application/xml');
+  let nodes = [...doc.getElementsByTagName('trkpt')];
+  if(!nodes.length) nodes = [...doc.getElementsByTagName('rtept')];
+  const raw = [];
+  for(const n of nodes){
+    const lat = parseFloat(n.getAttribute('lat')), lon = parseFloat(n.getAttribute('lon'));
+    const te = n.getElementsByTagName('time')[0], ee = n.getElementsByTagName('ele')[0];
+    if(!te || !isFinite(lat) || !isFinite(lon)) continue;
+    const t = Date.parse(te.textContent.trim())/1000;
+    if(!isFinite(t)) continue;
+    raw.push({lat, lon, t, ele: ee ? parseFloat(ee.textContent) : NaN});
+  }
+  raw.sort((a,b)=>a.t-b.t);
+  const pts = [];
+  for(const p of raw){ if(pts.length && p.t <= pts[pts.length-1].t) continue; pts.push(p); }
+  if(pts.length < 2) throw new Error('文件里没有找到带时间戳的轨迹点');
+  const e = pts.map(p=>p.ele);
+  const med = e.map((_,i)=>{ const w = e.slice(Math.max(0,i-2), i+3).filter(isFinite).sort((a,b)=>a-b); return w.length ? w[w.length>>1] : NaN; });
+  let cum = 0;
+  pts.forEach((p,i)=>{
+    let s=0,c=0; for(let j=i-4;j<=i+4;j++){ if(j>=0 && j<pts.length && isFinite(med[j])){ s+=med[j]; c++; } }
+    p.eleS = c ? s/c : NaN;
+    const m = project(p.lat, p.lon); p.x = m.x; p.y = m.y;
+    if(i) cum += hav(pts[i-1], p);
+    p.d = cum;
+  });
+  return {pts, t0:pts[0].t, t1:pts[pts.length-1].t, dist:cum};
+}
+function interp(t){
+  const P = st.track.pts;
+  if(t <= P[0].t) return {...P[0], i:0};
+  if(t >= P[P.length-1].t) return {...P[P.length-1], i:P.length-1};
+  let lo = 0, hi = P.length-1;
+  while(hi-lo > 1){ const m = (lo+hi)>>1; if(P[m].t <= t) lo = m; else hi = m; }
+  const a = P[lo], b = P[hi], f = (t-a.t)/(b.t-a.t), L = (u,v)=>u+(v-u)*f;
+  return {lat:L(a.lat,b.lat), lon:L(a.lon,b.lon), x:L(a.x,b.x), y:L(a.y,b.y), d:L(a.d,b.d),
+          eleS: isFinite(a.eleS)&&isFinite(b.eleS) ? L(a.eleS,b.eleS) : (a.eleS||b.eleS), t, i:lo};
+}
+function speedAt(t){
+  const v = (interp(t+1.5).d - interp(t-1.5).d)/3*3.6;
+  return v < 1.5 ? 0 : v;
+}
+function camera(t){
+  let x=0, y=0; const o=[-1.2,-0.6,0,0.6,1.2];
+  for(const d of o){ const p = interp(t+d); x+=p.x; y+=p.y; }
+  return {x:x/o.length, y:y/o.length};
+}
+
+/* ---------- time ---------- */
+function fmtLocal(t, tz){ return new Date(Math.round(t + tz*3600)*1000).toISOString().substr(11,8); }
+function fmtDur(x){ x = Math.max(0, Math.round(x)); return `${Math.floor(x/60)}:${String(x%60).padStart(2,'0')}`; }
+function parseLocal(str, tz, ref){
+  const m = String(str).trim().match(/^(\d{1,2}):(\d{2})(?::(\d{2}(?:\.\d+)?))?$/);
+  if(!m) return null;
+  const base = ref != null ? ref : (st.track ? st.track.t0 : null);
+  if(base == null) return null;
+  const secs = (+m[1])*3600 + (+m[2])*60 + (+(m[3]||0));
+  const day = Math.floor((base + tz*3600)/86400)*86400 - tz*3600;
+  let t = day + secs;
+  if(t < base - 12*3600) t += 86400;
+  if(t > base + 12*3600) t -= 86400;
+  return t;
+}
+function startFromName(name, tz){
+  const m = name.match(/(20\d{2})[-_]?(\d{2})[-_]?(\d{2})[ _\-T]?(\d{2})[-_:.]?(\d{2})[-_:.]?(\d{2})/);
+  if(!m) return null;
+  const mo = +m[2], d = +m[3], h = +m[4], mi = +m[5], s = +m[6];
+  if(mo<1||mo>12||d<1||d>31||h>23||mi>59||s>59) return null;
+  return Date.UTC(+m[1], mo-1, d, h, mi, s)/1000 - tz*3600;
+}
+async function startFromMvhd(file){
+  let off = 0; const size = file.size;
+  for(let guard=0; guard<64 && off+8 <= size; guard++){
+    const h = new DataView(await file.slice(off, off+16).arrayBuffer());
+    let len = h.getUint32(0), hdr = 8;
+    const type = String.fromCharCode(h.getUint8(4),h.getUint8(5),h.getUint8(6),h.getUint8(7));
+    if(len === 1){ len = Number(h.getBigUint64(8)); hdr = 16; } else if(len === 0) len = size - off;
+    if(type === 'moov'){
+      const b = new DataView(await file.slice(off+hdr, off+Math.min(len, hdr+65536)).arrayBuffer());
+      let p = 0;
+      while(p+16 <= b.byteLength){
+        const l = b.getUint32(p);
+        const ty = String.fromCharCode(b.getUint8(p+4),b.getUint8(p+5),b.getUint8(p+6),b.getUint8(p+7));
+        if(ty === 'mvhd'){
+          const ver = b.getUint8(p+8);
+          const ct = ver === 1 ? Number(b.getBigUint64(p+12)) : b.getUint32(p+12);
+          const unix = ct - 2082844800;
+          return unix > 946684800 ? unix : null;
+        }
+        if(l < 8) break; p += l;
+      }
+      return null;
+    }
+    if(len < 8) break; off += len;
+  }
+  return null;
+}
+
+/* ---------- fades (shared, or per clip) ---------- */
+const FADE_IDS = ['fadeIn','inStart','inDur','fadeOut','outBefore','outDur','stagger'];
+function readFadeUI(){ const o = {}; for(const id of FADE_IDS){ const el = $(id); o[id] = el.type === 'checkbox' ? el.checked : el.value; } return o; }
+function writeFadeUI(o){ if(!o) return; for(const id of FADE_IDS){ if(!(id in o)) continue; const el = $(id); if(el.type === 'checkbox') el.checked = !!o[id]; else el.value = o[id]; } }
+function fadeFrom(o){
+  const n = (v, d)=>{ const x = parseFloat(v); return isFinite(x) ? x : d; };
+  return {fadeIn: !!o.fadeIn, inStart: Math.max(0, n(o.inStart, 0)), inDur: Math.max(0.05, n(o.inDur, 0.6)),
+          fadeOut: !!o.fadeOut, outBefore: Math.max(0, n(o.outBefore, 0)), outDur: Math.max(0.05, n(o.outDur, 0.6)), stagger: Math.max(0, n(o.stagger, 0))};
+}
+function withClipFade(s, c){
+  if(s.fadeScope !== 'perClip' || !c) return s;
+  const f = c.fade || st.sharedFade;
+  return f ? {...s, ...fadeFrom(f)} : s;
+}
+
+/* ---------- settings ---------- */
+function S(){
+  const lang = $('lang').value;
+  return {
+    mode: document.querySelector('input[name=mode]:checked').value,
+    tz: parseFloat($('tz').value)||0, offset: parseFloat($('offset').value)||0,
+    mapCorner: $('mapCorner').value, infoCorner: $('infoCorner').value, splitInfo: $('splitInfo').checked,
+    placeCorner: $('placeCorner').value, dataCorner: $('dataCorner').value, stack: $('stack').value,
+    scale: +$('scale').value, mapSize: +$('mapSize').value, margin: +$('margin').value,
+    gap: +$('gap').value, radius: +$('radius').value, fs: +$('fs').value,
+    tint: $('tint').value, blur: +$('blur').value, refr: +$('refr').value, hl: +$('hl').value,
+    textColor: $('textColor').value, fontKey: $('font').value, F: {custom:CUSTOM_FONT, sans:SANS, serif:SERIF}[$('font').value] || SANS, serif: $('font').value === 'serif',
+    speedUnit: $('speedUnit').value, refresh: +$('refresh').value,
+    padX: +$('padX').value, padY: +$('padY').value, itemGap: +$('itemGap').value, labelGap: +$('labelGap').value, placeGap: +$('placeGap').value,
+    accent: $('accent').value, shadow: $('shadow').checked,
+    splitTime: $('splitTime').checked, timeCorner: $('timeCorner').value,
+    ...fadeFrom(readFadeUI()), fadeScope: $('fadeScope').value,
+    basemap: $('basemap').value, mapOpacity: +$('mapOpacity').value, mapMode: $('mapMode').value, zoom: +$('zoom').value,
+    showMap: $('showMap').checked, showPlace: $('showPlace').checked, showTime: $('showTime').checked,
+    showSpeed: $('showSpeed').checked, showAlt: $('showAlt').checked, showCoords: $('showCoords').checked,
+    coordFmt: $('coordFmt').value, lang, L: LABELS[lang], gran: $('gran').value,
+    res: $('res').value, fps: +$('fps').value, keepAudio: $('keepAudio').checked,
+    alphaRange: $('alphaRange').value, canvasSize: $('canvasSize').value
+  };
+}
+
+/* ---------- tiles ---------- */
+const tiles = new Map();
+function tileEntry(style, z, x, y){
+  const n = 2**z; x = ((x % n) + n) % n;
+  const key = `${style}/${z}/${x}/${y}`;
+  let e = tiles.get(key);
+  if(!e){
+    const img = new Image(); img.crossOrigin = 'anonymous';
+    e = {img, ok:false, fail:false, style};
+    e.promise = new Promise(res=>{
+      img.onload = ()=>{ e.ok = true; requestRender(); res(); };
+      img.onerror = ()=>{ e.fail = true; requestRender(); res(); };
+    });
+    img.src = BASEMAPS[style].url(z, x, y);
+    tiles.set(key, e);
+  }
+  return e;
+}
+function updateMapStatus(s){
+  const el = $('mapStatus');
+  if(!s.showMap || s.basemap === 'none' || !st.track){ el.textContent = ''; el.className = ''; return; }
+  let ok = 0, fail = 0, wait = 0;
+  for(const e of tiles.values()) if(e.style === s.basemap){ if(e.ok) ok++; else if(e.fail) fail++; else wait++; }
+  if(fail && !ok){ el.className = 'bad'; el.textContent = `底图加载失败（${fail} 块）。请确认电脑联网，并用 Chrome 或 Edge 直接打开这个文件，不要在聊天预览里打开；也可以换另一种底图试试。`; }
+  else if(fail){ el.className = 'bad'; el.textContent = `底图已加载 ${ok} 块，失败 ${fail} 块`; }
+  else { el.className = ''; el.textContent = wait ? `底图加载中…（已加载 ${ok} 块）` : (ok ? `底图正常，已加载 ${ok} 块` : ''); }
+}
+function computeFit(){
+  if(!st.track){ st.fit = null; return; }
+  let x0=Infinity,x1=-Infinity,y0=Infinity,y1=-Infinity;
+  for(const p of st.track.pts){ x0=Math.min(x0,p.x); x1=Math.max(x1,p.x); y0=Math.min(y0,p.y); y1=Math.max(y1,p.y); }
+  const span = Math.max(x1-x0, y1-y0, 1e-6)*1.3;
+  const z = Math.max(2, Math.min(18, Math.floor(Math.log2(1/span))));
+  st.fit = {z, span, cx:(x0+x1)/2, cy:(y0+y1)/2};
+}
+function viewFor(s, t, ms){
+  if(s.mapMode === 'fit' && st.fit){
+    const z = Math.min(st.fit.z, BASEMAPS[s.basemap] ? BASEMAPS[s.basemap].maxZ : 18), W = 256*2**z;
+    return {z, kk: ms/(st.fit.span*W), cx: st.fit.cx*W, cy: st.fit.cy*W};
+  }
+  const maxZ = BASEMAPS[s.basemap] ? BASEMAPS[s.basemap].maxZ : 18;
+  const z = Math.min(maxZ, Math.floor(s.zoom)), extra = 2**(s.zoom - z);
+  const c = camera(t), W = 256*2**z;
+  return {z, kk: ms/256*extra, cx: c.x*W, cy: c.y*W};
+}
+function tileRange(v, ms){
+  const half = ms/2/v.kk;
+  return {left:v.cx-half, top:v.cy-half, x0:Math.floor((v.cx-half)/256), x1:Math.floor((v.cx+half)/256),
+          y0:Math.max(0,Math.floor((v.cy-half)/256)), y1:Math.min(2**v.z-1, Math.floor((v.cy+half)/256))};
+}
+
+/* ---------- places ---------- */
+function parsePlaces(text, tz){
+  const out = [];
+  for(const line of text.split('\n')){
+    const L = line.trim(); if(!L) continue;
+    const parts = L.split('|').map(s=>s.trim());
+    let t = -Infinity;
+    if(/^\d{1,2}:\d{2}(:\d{2})?$/.test(parts[0])){ const v = parseLocal(parts.shift(), tz); if(v!=null) t = v; }
+    out.push({t, p:parts[0]||'', s:parts[1]||''});
+  }
+  return out.sort((a,b)=>a.t-b.t);
+}
+function placeAt(t){
+  const L = st.places; if(!L.length) return null;
+  let idx = -1;
+  for(let i=0;i<L.length;i++){ if(L[i].t <= t) idx = i; else break; }
+  if(idx < 0) return {cur:L[0], prev:null, age:Infinity};
+  const cur = L[idx], prev = idx>0 ? L[idx-1] : null;
+  return {cur, prev, age: t - cur.t};
+}
+
+/* ---------- formatting ---------- */
+function dms(v, pos, neg){
+  const h = v>=0 ? pos : neg; v = Math.abs(v);
+  let d = Math.floor(v), mF = (v-d)*60, m = Math.floor(mF), s = (mF-m)*60;
+  s = Math.round(s*10)/10; if(s>=60){ s=0; m++; } if(m>=60){ m=0; d++; }
+  return `${d}°${String(m).padStart(2,'0')}′${s.toFixed(1).padStart(4,'0')}″ ${h}`;
+}
+function coordText(p, fmt){
+  if(fmt === 'dec') return `${Math.abs(p.lat).toFixed(5)}° ${p.lat>=0?'N':'S'}   ${Math.abs(p.lon).toFixed(5)}° ${p.lon>=0?'E':'W'}`;
+  return `${dms(p.lat,'N','S')}   ${dms(p.lon,'E','W')}`;
+}
+function fit(ctx, text, max){
+  if(ctx.measureText(text).width <= max) return text;
+  let s = text; while(s.length && ctx.measureText(s+'…').width > max) s = s.slice(0,-1);
+  return s + '…';
+}
+function tabular(ctx, text, x, y){
+  const cw = ctx.measureText('0').width;
+  for(const ch of text){
+    const w = ctx.measureText(ch).width;
+    if(ch >= '0' && ch <= '9'){ ctx.fillText(ch, x + (cw-w)/2, y); x += cw; }
+    else { ctx.fillText(ch, x, y); x += w; }
+  }
+  return x;
+}
+const ease = x => x<0?0:x>1?1:1-Math.pow(1-x,3);
+
+/* ---------- info content ---------- */
+const WEIGHTS = {
+  custom:{pri:700, sec:400, val:400, unit:400, lab:400, coord:400},
+  sans:{pri:600, sec:400, val:500, unit:400, lab:500, coord:400},
+  serif:{pri:400, sec:400, val:400, unit:400, lab:400, coord:400}
+};
+const SHOW = {speed:'showSpeed', alt:'showAlt', time:'showTime'};
+const ANIM = 0.7, DATA_ANIM = 0.3;
+// only the characters that changed crossfade (briefly, with a tiny shift); unchanged ones stay solid and glide into place
+function drawChanging(ctx, prev, cur, x, y, k, f){
+  if(k >= 1 || prev === cur){ ctx.fillText(cur, x, y); return; }
+  const base = ctx.globalAlpha;
+  if(prev.length !== cur.length){
+    ctx.globalAlpha = base*(1-k); ctx.fillText(prev, x, y);
+    ctx.globalAlpha = base*k; ctx.fillText(cur, x, y);
+    ctx.globalAlpha = base; return;
+  }
+  let xp = x, xc = x;
+  for(let i=0;i<cur.length;i++){
+    const cp = prev[i], cc = cur[i], wp = ctx.measureText(cp).width, wc = ctx.measureText(cc).width;
+    if(cp === cc) ctx.fillText(cc, xp + (xc-xp)*k, y);
+    else {
+      ctx.globalAlpha = base*(1-k); ctx.fillText(cp, xp, y - 3*f*k);
+      ctx.globalAlpha = base*k; ctx.fillText(cc, xc, y + 3*f*(1-k));
+      ctx.globalAlpha = base;
+    }
+    xp += wp; xc += wc;
+  }
+}
+const mctx = document.createElement('canvas').getContext('2d');
+const tw = (font, text)=>{ mctx.font = font; return mctx.measureText(text).width; };
+function tabW(font, text){
+  mctx.font = font; const cw = mctx.measureText('0').width; let w = 0;
+  for(const ch of text) w += (ch >= '0' && ch <= '9') ? cw : mctx.measureText(ch).width;
+  return w;
+}
+const easeIO = x => x<=0?0:x>=1?1:(x<0.5 ? 4*x*x*x : 1-Math.pow(-2*x+2,3)/2);
+// old text fades out and slides up, the glass resizes, then new text fades in from below
+function phases(a){
+  const o = ease(a/0.25), n = ease((a-0.3)/0.3);
+  return {oldA:1-o, oldDy:-6*o, newA:n, newDy:6*(1-n), wk:easeIO((a-0.1)/0.4)};
+}
+function fontsFor(s){
+  const f = s.fs, F = s.F, w = WEIGHTS[s.fontKey], it = s.serif ? 'italic ' : '';
+  return {
+    pri:`${w.pri} ${27*f}px ${F}`, sec:`${it}${w.sec} ${16*f}px ${F}`,
+    val:`${w.val} ${42*f}px ${F}`, unit:`${w.unit} ${20*f}px ${F}`,
+    lab:`${it}${w.lab} ${14*f}px ${F}`, coord:`${w.coord} ${16*f}px ${F}`,
+    P:27*f, SS:16*f, VAL:42*f, LAB:14*f, CO:16*f
+  };
+}
+function statValue(key, tq, s){
+  if(key === 'time') return [fmtLocal(tq, s.tz), ''];
+  if(key === 'speed'){ const v = speedAt(tq); return s.speedUnit === 'mph' ? [String(Math.round(v/1.609344)), 'mph'] : [String(Math.round(v)), s.speedUnit]; }
+  const p = interp(tq); return [isFinite(p.eleS) ? String(Math.round(p.eleS)) : '0', 'm'];
+}
+function coordLines(p, fmt){
+  if(fmt === 'dec') return [`${Math.abs(p.lat).toFixed(5)}° ${p.lat>=0?'N':'S'}`, `${Math.abs(p.lon).toFixed(5)}° ${p.lon>=0?'E':'W'}`];
+  return [dms(p.lat,'N','S'), dms(p.lon,'E','W')];
+}
+function infoState(s, which, t){
+  const fo = fontsFor(s), f = s.fs, I = {fo, place:null, items:[], coords:null};
+  if(which !== 'data' && which !== 'time' && s.showPlace){
+    const pw = x => Math.max(tw(fo.pri, x.p), x.s ? tw(fo.sec, x.s) : 0);
+    const pl = placeAt(t);
+    if(pl){
+      const ph = pl.prev && pl.age < ANIM ? phases(pl.age) : null;
+      const ch1 = !!ph && pl.prev.p !== pl.cur.p, ch2 = !!ph && pl.prev.s !== pl.cur.s;
+      const lw = (font, a, b, ch)=> ch ? tw(font, a) + (tw(font, b) - tw(font, a))*ph.wk : tw(font, b);
+      const w1 = lw(fo.pri, ch1 ? pl.prev.p : '', pl.cur.p, ch1);
+      const w2 = pl.cur.s || (ch2 && pl.prev.s) ? lw(fo.sec, ch2 ? pl.prev.s : '', pl.cur.s, ch2) : 0;
+      I.place = {cur:pl.cur, prev: ph ? pl.prev : null, ph, ch1, ch2, w: Math.max(w1, w2)};
+    } else {
+      const hint = {p: s.lang === 'zh' ? '在“地名”里填写' : 'Add place names', s:''};
+      I.place = {cur:hint, prev:null, ph:null, w:pw(hint)};
+    }
+  }
+  if(which !== 'place'){
+    const U = s.refresh, tq = Math.floor(t/U)*U, a = t - tq;
+    for(const key of ['speed','alt','time']){
+      if(!s[SHOW[key]]) continue;
+      if(key === 'time' ? (s.splitTime && which !== 'time') : which === 'time') continue;
+      const label = s.L[key], lw = tw(fo.lab, label);
+      const cur = statValue(key, tq, s), prev = a < DATA_ANIM ? statValue(key, tq-U, s) : cur;
+      const k = prev[0] !== cur[0] ? ease(a/DATA_ANIM) : 1;
+      const unitW = cur[1] ? 4*f + tw(fo.unit, cur[1]) : 0;
+      const vw = tw(fo.val, prev[0]) + (tw(fo.val, cur[0]) - tw(fo.val, prev[0]))*k;
+      I.items.push({key, label, cur:cur[0], prev:prev[0], unit:cur[1], k, vw, w: Math.max(vw + unitW, lw)});
+    }
+    if(s.showCoords && which !== 'time'){
+      const lines = coordLines(interp(tq), s.coordFmt);
+      const plines = a < DATA_ANIM ? coordLines(interp(tq-U), s.coordFmt) : lines;
+      const k = (plines[0] !== lines[0] || plines[1] !== lines[1]) ? ease(a/DATA_ANIM) : 1;
+      const wOf = L => Math.max(tw(fo.coord, L[0]), tw(fo.coord, L[1]));
+      I.coords = {lines, plines, k, w: wOf(plines) + (wOf(lines) - wOf(plines))*k};
+    }
+  }
+  I.cols = I.items.length + (I.coords ? 1 : 0);
+  const gap = s.itemGap*f;
+  const rowW = I.items.reduce((acc,i)=>acc+i.w, 0) + (I.coords ? I.coords.w : 0) + Math.max(0, I.cols-1)*gap;
+  I.placeH = I.place ? fo.P*0.74 + fo.SS*1.55 + fo.SS*0.25 : 0;
+  const statsH = I.items.length ? fo.VAL*0.72 + s.labelGap*f + fo.LAB*0.72 : 0;
+  const coordsH = I.coords ? fo.CO*0.72 + fo.CO*1.35 : 0;
+  I.rowH = Math.max(statsH, coordsH);
+  I.w = Math.max(I.place ? I.place.w : 0, rowW) + s.padX*2;
+  I.h = I.placeH + I.rowH + (I.place && I.cols ? s.placeGap*f : 0) + s.padY*2;
+  I.empty = !I.place && !I.cols;
+  return I;
+}
+function panelsFor(s, W, H, t){
+  const k = Math.min(W,H)/1080*s.scale, M = s.margin*k, G = s.gap*k;
+  const defs = [];
+  if(s.showMap) defs.push({kind:'map', corner:s.mapCorner});
+  const addInfo = (which, corner)=>{ const I = infoState(s, which, t); if(!I.empty) defs.push({kind:'info', I, corner}); };
+  if(s.splitInfo){ addInfo('place', s.placeCorner); addInfo('data', s.dataCorner); }
+  else addInfo('all', s.infoCorner);
+  if(s.splitTime && s.showTime) addInfo('time', s.timeCorner);
+  const groups = {};
+  defs.forEach((d,i)=>{ d.order = i; (groups[d.corner] = groups[d.corner] || []).push(d); });
+  const out = [];
+  for(const [corner, list] of Object.entries(groups)){
+    const right = corner[1] === 'r', bottom = corner[0] === 'b', horiz = s.stack === 'row';
+    let cur = M;
+    for(const d of list){
+      const dw = d.kind === 'map' ? s.mapSize : d.I.w, dh = d.kind === 'map' ? s.mapSize : d.I.h;
+      const w = dw*k, h = dh*k; let x, y;
+      if(horiz){ x = right ? W-cur-w : cur; y = bottom ? H-M-h : M; cur += w+G; }
+      else { y = bottom ? H-cur-h : cur; x = right ? W-M-w : M; cur += h+G; }
+      out.push({kind:d.kind, order:d.order, x, y, w, h, r:(d.kind==='map'?1:0.9)*s.radius*k, k, I:d.I});
+    }
+  }
+  return out;
+}
+
+/* ---------- glass ---------- */
+const bdCanvases = [0,1,2,3].map(()=>document.createElement('canvas'));
+function rr(x,y,w,h,r){ const p = new Path2D(); p.roundRect(x,y,w,h,Math.max(0,Math.min(r,w/2,h/2))); return p; }
+function makeBackdrop(src, p, s, idx){
+  const tint = TINTS[s.tint], blur = s.blur*p.k, m = Math.ceil(blur*2)+2;
+  const c = bdCanvases[idx], bw = Math.ceil(p.w+2*m), bh = Math.ceil(p.h+2*m);
+  if(c.width !== bw || c.height !== bh){ c.width = bw; c.height = bh; }
+  const b = c.getContext('2d');
+  b.setTransform(1,0,0,1,0,0); b.clearRect(0,0,bw,bh);
+  b.filter = `blur(${blur.toFixed(1)}px) saturate(${tint.sat}) brightness(${tint.b})`;
+  const sx = p.x-m, sy = p.y-m;
+  const x0 = Math.max(0,sx), y0 = Math.max(0,sy), x1 = Math.min(src.width,sx+bw), y1 = Math.min(src.height,sy+bh);
+  if(x1 > x0 && y1 > y0){
+    b.drawImage(src, x0, y0, x1-x0, y1-y0, 0, 0, bw, bh);
+    b.drawImage(src, x0, y0, x1-x0, y1-y0, x0-sx, y0-sy, x1-x0, y1-y0);
+  }
+  b.filter = 'none';
+  return {c, m};
+}
+function drawZoom(ctx, bd, p, z){
+  const cx = p.x+p.w/2, cy = p.y+p.h/2, hw = (p.w/2+bd.m)*z, hh = (p.h/2+bd.m)*z;
+  ctx.drawImage(bd.c, cx-hw, cy-hh, hw*2, hh*2);
+}
+function drawShadow(ctx, p, s){
+  if(!s.shadow) return;
+  const outer = rr(p.x, p.y, p.w, p.h, p.r), clip = new Path2D();
+  clip.rect(-1e5, -1e5, 2e5, 2e5); clip.addPath(outer);
+  ctx.save(); ctx.clip(clip, 'evenodd');
+  ctx.shadowColor = 'rgba(0,0,0,0.28)'; ctx.shadowBlur = 30*p.k; ctx.shadowOffsetY = 10*p.k;
+  ctx.fillStyle = '#000'; ctx.fill(outer);
+  ctx.restore();
+}
+function drawGlassBody(ctx, p, bd, s, fake){
+  const outer = rr(p.x, p.y, p.w, p.h, p.r), tint = TINTS[s.tint];
+  ctx.save(); ctx.clip(outer);
+  const rim = Math.min(p.w, p.h)*0.09;
+  if(!fake && bd){
+    drawZoom(ctx, bd, p, 1 + 0.03*s.refr);
+    const steps = 8;
+    for(let j=1;j<=steps;j++){
+      const f = j/steps, t = rim*(1 - f + 1/steps), ring = new Path2D();
+      ring.addPath(outer); ring.addPath(rr(p.x+t, p.y+t, p.w-2*t, p.h-2*t, p.r-t));
+      ctx.save(); ctx.clip(ring, 'evenodd'); drawZoom(ctx, bd, p, 1 + s.refr*(0.03 + 0.14*f*f)); ctx.restore();
+    }
+  }
+  ctx.fillStyle = fake ? tint.fake : tint.fill; ctx.fillRect(p.x, p.y, p.w, p.h);
+  if(fake){
+    ctx.lineWidth = rim*1.2; ctx.strokeStyle = `rgba(255,255,255,${(0.07*s.hl).toFixed(3)})`; ctx.stroke(outer);
+  }
+  const g = ctx.createLinearGradient(0, p.y, 0, p.y+p.h);
+  g.addColorStop(0, `rgba(255,255,255,${0.20*s.hl})`); g.addColorStop(0.45, 'rgba(255,255,255,0)');
+  g.addColorStop(1, `rgba(255,255,255,${0.07*s.hl})`);
+  ctx.fillStyle = g; ctx.fillRect(p.x, p.y, p.w, p.h);
+  const gx = p.x+p.w*0.2, gy = p.y+p.h*0.04;
+  const rg = ctx.createRadialGradient(gx, gy, 0, gx, gy, Math.max(p.w,p.h)*0.6);
+  rg.addColorStop(0, `rgba(255,255,255,${0.15*s.hl})`); rg.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = rg; ctx.fillRect(p.x, p.y, p.w, p.h);
+  ctx.restore();
+}
+function drawRim(ctx, p, s){
+  const k = p.k, a = v=>Math.min(1, v*s.hl).toFixed(3);
+  const g = ctx.createLinearGradient(p.x, p.y, p.x+p.w, p.y+p.h);
+  g.addColorStop(0, `rgba(255,255,255,${a(0.85)})`); g.addColorStop(0.3, `rgba(255,255,255,${a(0.18)})`);
+  g.addColorStop(0.7, `rgba(255,255,255,${a(0.10)})`); g.addColorStop(1, `rgba(255,255,255,${a(0.55)})`);
+  ctx.lineWidth = 1.4*k; ctx.strokeStyle = g;
+  ctx.stroke(rr(p.x+0.7*k, p.y+0.7*k, p.w-1.4*k, p.h-1.4*k, p.r-0.7*k));
+}
+
+/* ---------- panel content ---------- */
+function drawMapContent(ctx, s, t, u, ms){
+  const base = ctx.globalAlpha, bm = BASEMAPS[s.basemap];
+  const v = viewFor(s, t, ms), r = tileRange(v, ms), W = 256*2**v.z;
+  if(bm){
+    ctx.globalAlpha = base*s.mapOpacity;
+    for(let ty=r.y0; ty<=r.y1; ty++) for(let tx=r.x0; tx<=r.x1; tx++){
+      const e = tileEntry(s.basemap, v.z, tx, ty);
+      if(e.ok) ctx.drawImage(e.img, (tx*256-r.left)*v.kk, (ty*256-r.top)*v.kk, 256*v.kk+0.6, 256*v.kk+0.6);
+    }
+    ctx.globalAlpha = base;
+  }
+  const dark = bm ? bm.dark : s.textColor === 'white';
+  const P = st.track.pts, X = p=>(p.x*W-r.left)*v.kk, Y = p=>(p.y*W-r.top)*v.kk;
+  const cur = interp(t);
+  ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  ctx.strokeStyle = dark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.35)'; ctx.lineWidth = 2.6;
+  ctx.beginPath(); P.forEach((p,i)=> i?ctx.lineTo(X(p),Y(p)):ctx.moveTo(X(p),Y(p))); ctx.stroke();
+  ctx.strokeStyle = s.accent; ctx.lineWidth = 4;
+  ctx.beginPath(); ctx.moveTo(X(P[0]),Y(P[0]));
+  for(let i=1;i<=cur.i;i++) ctx.lineTo(X(P[i]),Y(P[i]));
+  ctx.lineTo(X(cur),Y(cur)); ctx.stroke();
+  const cx = X(cur), cy = Y(cur), ph = (u % 2)/2;
+  ctx.globalAlpha = base*0.38*(1-ph); ctx.fillStyle = s.accent;
+  ctx.beginPath(); ctx.arc(cx, cy, 7 + 16*ph, 0, Math.PI*2); ctx.fill();
+  ctx.globalAlpha = base;
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.35)'; ctx.shadowBlur = 6;
+  ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(cx, cy, 8, 0, Math.PI*2); ctx.fill(); ctx.restore();
+  ctx.fillStyle = s.accent; ctx.beginPath(); ctx.arc(cx, cy, 5.5, 0, Math.PI*2); ctx.fill();
+  if(bm){
+    ctx.font = `6.5px ${SANS}`; ctx.textAlign = 'right';
+    ctx.fillStyle = dark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.5)';
+    ctx.fillText(bm.attr, ms-10, ms-8); ctx.textAlign = 'left';
+  }
+}
+function drawInfo(ctx, s, I, k){
+  const ink = INKS[s.textColor], fo = I.fo, base = ctx.globalAlpha, f = s.fs;
+  ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left'; ctx.letterSpacing = '0px';
+  ctx.shadowColor = ink.shadow; ctx.shadowBlur = 8*k*f; ctx.shadowOffsetY = 1*k;
+  const x0 = s.padX; let y = s.padY;
+  if(I.place){
+    const pb = y + fo.P*0.74, sb = pb + fo.SS*1.55;
+    const P = I.place, ph = P.ph;
+    const line = (font, oldTxt, newTxt, yb, changed)=>{
+      ctx.font = font; ctx.fillStyle = ink.ink;
+      if(!changed){ if(newTxt){ ctx.globalAlpha = base; ctx.fillText(newTxt, x0, yb); } return; }
+      if(oldTxt && ph.oldA > 0){ ctx.globalAlpha = base*ph.oldA; ctx.fillText(oldTxt, x0, yb + ph.oldDy*f); }
+      if(newTxt && ph.newA > 0){ ctx.globalAlpha = base*ph.newA; ctx.fillText(newTxt, x0, yb + ph.newDy*f); }
+    };
+    line(fo.pri, P.ch1 ? P.prev.p : '', P.cur.p, pb, P.ch1);
+    line(fo.sec, P.ch2 ? P.prev.s : '', P.cur.s, sb, P.ch2);
+    ctx.globalAlpha = base;
+    y += I.placeH + (I.cols ? s.placeGap*f : 0);
+  }
+  if(I.cols){
+    const vb = y + fo.VAL*0.72, lb = vb + s.labelGap*f + fo.LAB*0.72;
+    const cb = I.items.length ? lb : y + I.rowH;
+    let x = x0;
+    for(const it of I.items){
+      ctx.fillStyle = ink.ink; ctx.font = fo.val;
+      drawChanging(ctx, it.prev, it.cur, x, vb, it.k, f);
+      if(it.unit){ ctx.font = fo.unit; ctx.fillText(it.unit, x + it.vw + 4*f, vb); }
+      ctx.font = fo.lab; ctx.fillStyle = ink.ink; ctx.fillText(it.label, x, lb);
+      x += it.w + s.itemGap*f;
+    }
+    if(I.coords){
+      ctx.font = fo.coord; ctx.fillStyle = ink.ink;
+      drawChanging(ctx, I.coords.plines[0], I.coords.lines[0], x, cb - fo.CO*1.35, I.coords.k, f);
+      drawChanging(ctx, I.coords.plines[1], I.coords.lines[1], x, cb, I.coords.k, f);
+    }
+  }
+  ctx.shadowColor = 'transparent';
+}
+
+/* ---------- compositing ---------- */
+function drawPlaceholder(ctx, W, H, u){
+  const g = ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,'#0b1430'); g.addColorStop(0.55,'#262a4f'); g.addColorStop(1,'#3b2a2a');
+  ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+  const k = Math.min(W,H)/1080, cols = ['#ffb347','#ff6f61','#7fd1ff','#ffe08a','#c3a6ff'];
+  for(let i=0;i<34;i++){
+    const x = ((i*197.3 + u*50*(1+i%3)) % (W+300)) - 150;
+    const y = H*(0.04 + 0.92*((i*0.618)%1));
+    ctx.globalAlpha = 0.55; ctx.fillStyle = cols[i%5];
+    ctx.beginPath(); ctx.arc(x, y, (16 + (i*37)%70)*k, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+// clear=true draws on a transparent canvas (overlay export); fake glass is used whenever mode is "alpha"
+function renderComposite(ctx, W, H, src, t, u, s, clear, total){
+  ctx.setTransform(1,0,0,1,0,0); ctx.globalAlpha = 1; ctx.filter = 'none'; ctx.shadowColor = 'transparent';
+  if(clear) ctx.clearRect(0, 0, W, H);
+  else if(src) ctx.drawImage(src, 0, 0, W, H);
+  else drawPlaceholder(ctx, W, H, u);
+  if(!st.track) return [];
+  const fake = s.mode === 'alpha';
+  const ps = panelsFor(s, W, H, t);
+  ps.forEach((p,i)=>{
+    const d = p.order*s.stagger;
+    const aIn = s.fadeIn ? ease((u - s.inStart - d)/s.inDur) : 1;
+    const aOut = (s.fadeOut && total > 0) ? 1 - ease((u - (total - s.outBefore) - d)/s.outDur) : 1;
+    p.a = Math.min(aIn, aOut);
+    if(p.a < 1){
+      const sc = 0.92 + 0.08*p.a, cx = p.x+p.w/2, cy = p.y+p.h/2;
+      p.w *= sc; p.h *= sc; p.x = cx-p.w/2; p.y = cy-p.h/2; p.r *= sc; p.k *= sc;
+    }
+  });
+  const bds = ps.map((p,i)=> (!fake && p.a > 0) ? makeBackdrop(ctx.canvas, p, s, i) : null);
+  ps.forEach((p,i)=>{
+    if(p.a <= 0) return;
+    ctx.save(); ctx.globalAlpha = p.a;
+    drawShadow(ctx, p, s);
+    drawGlassBody(ctx, p, bds[i], s, fake);
+    if(p.kind === 'map'){
+      const ins = MAP_INSET*p.k, ms = s.mapSize - MAP_INSET*2;
+      ctx.save();
+      ctx.clip(rr(p.x+ins, p.y+ins, p.w-2*ins, p.h-2*ins, p.r-ins));
+      ctx.translate(p.x+ins, p.y+ins); ctx.scale(p.k, p.k);
+      drawMapContent(ctx, s, t, u, ms);
+      ctx.restore();
+    } else {
+      ctx.save(); ctx.translate(p.x, p.y); ctx.scale(p.k, p.k);
+      ctx.clip(rr(0, 0, p.w/p.k, p.h/p.k, p.r/p.k));
+      drawInfo(ctx, s, p.I, p.k);
+      ctx.restore();
+    }
+    drawRim(ctx, p, s);
+    ctx.restore();
+  });
+  return ps;
+}
+
+/* ---------- preview ---------- */
+const cv = $('cv'), cx = cv.getContext('2d');
+const pv = document.createElement('video'); pv.muted = true; pv.playsInline = true; pv.preload = 'auto';
+pv.addEventListener('seeked', ()=>requestRender());
+pv.addEventListener('loadeddata', ()=>requestRender());
+pv.addEventListener('ended', ()=>{ st.playing = false; setPlayIcon(false); });
+const curClip = ()=> st.clips[st.cur] || null;
+const trackTime = (c, vt, s)=> c.start + vt + s.offset;
+let pending = false, lastTs = 0, scrubbing = false;
+function requestRender(){ if(!pending){ pending = true; requestAnimationFrame(tick); } }
+function tick(ts){
+  pending = false;
+  const c = curClip();
+  if(st.playing){
+    if(c){ st.vt = pv.currentTime; }
+    else if(st.track){
+      const dt = lastTs ? (ts-lastTs)/1000 : 0; st.t += dt; if(st.t > st.track.t1) st.t = st.track.t0;
+    }
+    lastTs = ts; requestRender();
+  } else lastTs = 0;
+  draw();
+}
+function canvasDims(s){
+  const c = curClip();
+  if(s.canvasSize !== 'auto' && (s.mode === 'alpha' || !c)){ const [w,h] = s.canvasSize.split('x').map(Number); return {W:w, H:h}; }
+  if(c && c.w) return s.mode === 'alpha' ? {W:c.w, H:c.h} : outDims(c, s);
+  return {W:1080, H:1920};
+}
+function draw(){
+  const s = S();
+  document.body.classList.toggle('alphaMode', s.mode === 'alpha');
+  document.body.classList.toggle('splitInfo', s.splitInfo);
+  document.body.classList.toggle('splitTime', s.splitTime);
+  document.body.classList.toggle('fadeIn', s.fadeIn);
+  document.body.classList.toggle('fadeOut', s.fadeOut);
+  document.body.classList.toggle('multiClip', st.clips.length > 1);
+  document.body.classList.toggle('perClip', s.fadeScope === 'perClip' && st.clips.length > 1);
+  document.body.classList.toggle('fontCustom', s.fontKey === 'custom');
+  const full = canvasDims(s), sc = Math.min(1, 1280/Math.max(full.W, full.H));
+  const W = Math.round(full.W*sc), H = Math.round(full.H*sc);
+  if(cv.width !== W || cv.height !== H){ cv.width = W; cv.height = H; fitCanvas(); }
+  const c = curClip();
+  let t, u, src = null, clock = '';
+  if(c){
+    u = st.vt; t = c.start != null ? trackTime(c, st.vt, s) : (st.track ? st.track.t0 : 0);
+    if(pv.readyState >= 2) src = pv;
+    clock = `${fmtDur(st.vt)} / ${fmtDur(c.dur)}` + (st.track && c.start != null ? `  ·  轨迹 ${fmtLocal(t, s.tz)}` : '');
+    if(!scrubbing){ $('scrub').value = Math.round(st.vt/Math.max(1e-6, c.dur)*1000); setFill($('scrub')); }
+  } else {
+    t = st.t; u = st.track ? st.t - st.track.t0 : 0;
+    if(st.track){
+      clock = `${fmtLocal(t, s.tz)}  ·  ${fmtDur(u)} / ${fmtDur(st.track.t1-st.track.t0)}`;
+      if(!scrubbing){ $('scrub').value = Math.round(u/Math.max(1e-6, st.track.t1-st.track.t0)*1000); setFill($('scrub')); }
+    }
+  }
+  renderComposite(cx, W, H, src, t, u, s, false, c ? c.dur : (st.track ? st.track.t1 - st.track.t0 : 0));
+  if(!st.track){
+    cx.fillStyle = 'rgba(255,255,255,0.85)'; cx.font = `500 ${Math.round(W/30)}px ${SANS}`; cx.textAlign = 'center';
+    cx.fillText('Liquid-Location-Bar · 载入 GPX 后在这里预览', W/2, H/2); cx.textAlign = 'left';
+  }
+  $('clock').textContent = clock || '--:--';
+  updateMapStatus(s);
+}
+$('scrub').addEventListener('input', e=>{
+  scrubbing = true; const f = (+e.target.value)/1000, c = curClip();
+  if(c){ st.vt = f*c.dur; pv.currentTime = st.vt; }
+  else if(st.track){ st.t = st.track.t0 + f*(st.track.t1-st.track.t0); }
+  requestRender();
+});
+$('scrub').addEventListener('change', ()=>{ scrubbing = false; });
+function setPlaying(on){
+  st.playing = on; setPlayIcon(on);
+  const c = curClip();
+  if(c){ if(on) pv.play().catch(()=>{}); else { pv.pause(); st.vt = pv.currentTime; } }
+  requestRender();
+}
+$('play').onclick = ()=>{ if(st.track || curClip()) setPlaying(!st.playing); };
+
+/* ---------- loading ---------- */
+function loadGpx(text, name){
+  try{
+    st.track = parseGPX(text);
+    const s = S(); st.t = st.track.t0;
+    computeFit(); applyPlaces();
+    for(const c of st.clips) if(c.start == null){ c.start = st.track.t0; c.how = '未识别，暂用轨迹开头'; }
+    $('info').innerHTML = `${name}<br>${st.track.pts.length} 个点 · ${fmtDur(st.track.t1-st.track.t0)} · ${(st.track.dist/1000).toFixed(2)} km<br>本地时间 ${fmtLocal(st.track.t0,s.tz)} 至 ${fmtLocal(st.track.t1,s.tz)}`;
+    refreshClips(); status(''); requestRender();
+  }catch(err){ status('读取失败：' + err.message); }
+}
+async function addVideos(files){
+  for(const f of files){
+    const url = URL.createObjectURL(f);
+    const meta = await new Promise(res=>{
+      const v = document.createElement('video'); v.preload = 'metadata'; v.muted = true;
+      v.onloadedmetadata = ()=>res({dur:v.duration, w:v.videoWidth, h:v.videoHeight});
+      v.onerror = ()=>res(null); v.src = url;
+    });
+    if(!meta || !meta.w){ status(`${f.name} 无法在浏览器中解码，可以先转成 H.264 的 MP4 再试`); URL.revokeObjectURL(url); continue; }
+    const s = S();
+    let start = startFromName(f.name, s.tz), how = '来自文件名';
+    if(start == null){ try{ start = await startFromMvhd(f); how = '来自视频信息，请核对'; }catch(e){ start = null; } }
+    if(start == null && st.track){ start = st.track.t0; how = '未识别，暂用轨迹开头'; }
+    const pend = st.pendingStarts && st.pendingStarts[f.name];
+    if(pend){ const v = parseLocal(pend, s.tz, start != null ? start : (st.track ? st.track.t0 : null)); if(v != null){ start = v; how = '来自模板'; } }
+    const pf = st.pendingFades && st.pendingFades[f.name];
+    st.clips.push({file:f, url, name:f.name, ...meta, start, how, fade: pf ? {...pf} : null});
+  }
+  if(st.cur < 0 && st.clips.length) selectClip(0);
+  refreshClips();
+}
+function coverage(c, s){
+  if(!st.track || c.start == null) return '';
+  const a = c.start + s.offset, b = a + c.dur;
+  if(b < st.track.t0 || a > st.track.t1) return ' · 不在轨迹时间内';
+  if(a < st.track.t0 || b > st.track.t1) return ' · 部分超出轨迹';
+  return '';
+}
+function ensureClipFade(c){ if(!c.fade) c.fade = {...(st.sharedFade || readFadeUI())}; return c.fade; }
+function loadClipFade(c){ writeFadeUI(ensureClipFade(c)); requestRender(); }
+function storeClipFade(){ const c = curClip(); if(c && $('fadeScope').value === 'perClip') c.fade = readFadeUI(); }
+FADE_IDS.forEach(id=>{ $(id).addEventListener('input', storeClipFade); $(id).addEventListener('change', storeClipFade); });
+$('fadeScope').addEventListener('change', ()=>{
+  const c = curClip();
+  if($('fadeScope').value === 'perClip'){
+    st.sharedFade = readFadeUI();
+    for(const k of st.clips) ensureClipFade(k);
+    if(c) loadClipFade(c);
+  } else {
+    if(c) c.fade = readFadeUI();
+    if(st.sharedFade) writeFadeUI(st.sharedFade);
+  }
+  requestRender();
+});
+
+function refreshClips(){
+  const s = S(), sel = $('clipSel');
+  sel.innerHTML = '';
+  st.clips.forEach((c,i)=>{
+    const o = document.createElement('option'); o.value = i;
+    o.textContent = `${c.name}  ·  ${c.start!=null?fmtLocal(c.start,s.tz):'时间未知'}  ·  ${fmtDur(c.dur)}${coverage(c,s)}`;
+    sel.appendChild(o);
+  });
+  if(!st.clips.length){ const o = document.createElement('option'); o.disabled = true; o.textContent = '还没有视频'; sel.appendChild(o); }
+  sel.value = st.cur;
+  const c = curClip();
+  $('clipStart').value = c && c.start != null ? fmtLocal(c.start, s.tz) : '';
+  $('clipHow').textContent = c ? `${c.w}×${c.h} · ${fmtDur(c.dur)} · 开拍时间${c.how}` : '';
+  $('fadeTarget').textContent = c ? `正在设置：${c.name}（在“素材”的列表里切换片段）` : '';
+  document.body.classList.toggle('multiClip', st.clips.length > 1);
+  requestRender();
+}
+function selectClip(i){
+  if(st.playing) setPlaying(false);
+  st.cur = i; const c = curClip(); st.vt = 0;
+  if(c){ pv.src = c.url; pv.currentTime = 0; }
+  if(c && $('fadeScope').value === 'perClip') loadClipFade(c);
+  refreshClips(); requestRender();
+}
+$('clipSel').addEventListener('change', e=>selectClip(+e.target.value));
+$('clipStart').addEventListener('change', ()=>{
+  const c = curClip(); if(!c) return; const s = S();
+  const v = parseLocal($('clipStart').value, s.tz, c.start != null ? c.start : (st.track ? st.track.t0 : null));
+  if(v == null){ status('时间格式应为 时:分:秒，例如 22:48:10'); return; }
+  c.start = v; c.how = '手动填写'; refreshClips(); requestRender();
+});
+$('offset').addEventListener('change', ()=>{ refreshClips(); requestRender(); });
+$('tz').addEventListener('change', ()=>{
+  const s = S();
+  for(const c of st.clips) if(c.how === '来自文件名'){ const v = startFromName(c.name, s.tz); if(v != null) c.start = v; }
+  applyPlaces(); refreshClips(); requestRender();
+});
+
+function readGpxFile(f){ const r = new FileReader(); r.onload = ()=>loadGpx(r.result, f.name); r.readAsText(f); }
+function routeFiles(list){
+  const vids = [];
+  for(const f of list){
+    if(/\.gpx$/i.test(f.name)) readGpxFile(f);
+    else if(/^video\//.test(f.type) || /\.(mp4|mov|m4v)$/i.test(f.name)) vids.push(f);
+  }
+  if(vids.length) addVideos(vids);
+}
+$('dropGpx').onclick = ()=>$('fileGpx').click();
+$('dropVid').onclick = ()=>$('fileVid').click();
+$('fileGpx').onchange = e=>{ if(e.target.files[0]) readGpxFile(e.target.files[0]); e.target.value = ''; };
+$('fileVid').onchange = e=>{ addVideos([...e.target.files]); e.target.value = ''; };
+['dragover','dragenter'].forEach(ev=>document.addEventListener(ev, e=>{ e.preventDefault(); document.querySelectorAll('.drop').forEach(d=>d.classList.add('over')); }));
+['dragleave','drop'].forEach(ev=>document.addEventListener(ev, e=>{ e.preventDefault(); document.querySelectorAll('.drop').forEach(d=>d.classList.remove('over')); }));
+document.addEventListener('drop', e=>routeFiles([...e.dataTransfer.files]));
+
+function applyPlaces(){ st.places = st.track ? parsePlaces($('places').value, S().tz) : []; requestRender(); }
+$('applyPlaces').onclick = applyPlaces;
+document.querySelectorAll('aside input, aside select').forEach(el=>{
+  if(['clipStart','offset','tz','fileGpx','fileVid','clipSel'].includes(el.id)) return;
+  el.addEventListener('input', requestRender); el.addEventListener('change', requestRender);
+});
+
+/* ---------- geocoding ---------- */
+const sleep = ms => new Promise(r=>setTimeout(r, ms));
+$('geocode').onclick = async ()=>{
+  if(!st.track) return;
+  const s = S(); $('geocode').disabled = true;
+  const samples = []; let lastD = -Infinity;
+  for(const p of st.track.pts){ if(p.d - lastD >= 150){ samples.push(p); lastD = p.d; } }
+  const out = []; let fails = 0;
+  for(let i=0;i<samples.length;i++){
+    const p = samples[i];
+    status(`查询地名 ${i+1} / ${samples.length}`);
+    if(i) await sleep(1100);
+    try{
+      const lang = s.lang === 'zh' ? 'zh-CN,zh,en' : 'en';
+      const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${p.lat}&lon=${p.lon}&zoom=17&addressdetails=1&accept-language=${lang}`);
+      const j = await r.json(), a = j.address || {};
+      const road = a.road || a.pedestrian || a.footway || a.cycleway || a.path || a.square || j.name || '';
+      const area = a.suburb || a.neighbourhood || a.quarter || a.city_district || '';
+      const city = a.city || a.town || a.village || a.municipality || a.county || '';
+      let pri, sec;
+      if(s.gran === 'road'){ pri = road || area; sec = [area, city].filter(Boolean).join(', '); }
+      else { pri = area || road; sec = [city, a.state].filter(Boolean).join(', '); }
+      if(!pri || (out.length && out[out.length-1].p === pri)) continue;
+      out.push({t:p.t, p:pri, s:sec});
+    }catch(e){ fails++; }
+  }
+  if(out.length){
+    $('places').value = out.map(o=>`${fmtLocal(o.t, s.tz)} | ${o.p} | ${o.s}`).join('\n');
+    applyPlaces();
+    status(`完成，共 ${out.length} 个地名${fails?`，${fails} 次查询失败`:''}。可以直接修改文字后点“应用修改”。`);
+  } else status('没有查到地名，可能是网络受限，可以手动填写。');
+  $('geocode').disabled = false;
+};
+
+/* ---------- export helpers ---------- */
+function status(m){ $('status').textContent = m; }
+function progress(f){ $('prog').style.display = f==null ? 'none' : 'block'; $('prog').firstElementChild.style.width = `${Math.round((f||0)*100)}%`; }
+function download(blob, name){
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href), 60000);
+}
+function setBusy(b){
+  st.busy = b; ['exportCur','exportAll','exportAlpha','png'].forEach(id=>$(id).disabled = b); $('cancel').disabled = !b;
+  if(!b) progress(null);
+}
+$('cancel').onclick = ()=>{ st.cancel = true; };
+async function pickDir(){
+  if(!window.showDirectoryPicker) return {dir:null};
+  try{ return {dir: await window.showDirectoryPicker({mode:'readwrite', id:'gpx-glass'})}; }
+  catch(e){ return e.name === 'AbortError' ? {abort:true} : {dir:null}; }
+}
+function seekTo(v, t){
+  return new Promise(res=>{
+    let done = false;
+    const fin = ()=>{ if(done) return; done = true; v.removeEventListener('seeked', fin); res(); };
+    v.addEventListener('seeked', fin); v.currentTime = t; setTimeout(fin, 5000);
+  });
+}
+async function preloadTiles(s, t0, dur){
+  if(!s.showMap || s.basemap === 'none') return 0;
+  const ms = s.mapSize - MAP_INSET*2, need = new Set(), list = [];
+  const step = s.mapMode === 'fit' ? Infinity : 0.5;
+  for(let vt = 0; vt <= dur + 1e-6; vt += step){
+    const v = viewFor(s, t0 + vt, ms), r = tileRange(v, ms);
+    for(let y=r.y0;y<=r.y1;y++) for(let x=r.x0;x<=r.x1;x++){
+      const key = `${v.z}/${x}/${y}`; if(need.has(key)) continue; need.add(key); list.push(tileEntry(s.basemap, v.z, x, y));
+    }
+    if(step === Infinity) break;
+  }
+  status(`加载地图底图 ${list.length} 块…`);
+  await Promise.race([Promise.all(list.map(e=>e.promise)), sleep(25000)]);
+  return list.filter(e=>!e.ok).length;
+}
+function outDims(c, s){
+  const sh = Math.min(c.w, c.h), target = s.res === 'orig' ? sh : Math.min(sh, +s.res), sc = target/sh;
+  return {W: Math.round(c.w*sc/2)*2, H: Math.round(c.h*sc/2)*2};
+}
+
+/* ---------- transparent overlay export (WebM, VP9 with alpha) ---------- */
+$('exportAlpha').onclick = async ()=>{
+  if(st.busy) return;
+  if(!st.track){ status('请先载入 GPX'); return; }
+  if(!window.MB || !('VideoEncoder' in window)){ status('需要最新版 Chrome 或 Edge，并保持联网以加载编码组件'); return; }
+  await fontsReady();
+  const s = S(), fps = s.fps, c = curClip();
+  let t0, dur, base;
+  if(s.alphaRange === 'track' || !c || c.start == null){
+    if(s.alphaRange === 'clip' && !c){ status('还没有视频片段，已改用整条轨迹的时间范围'); }
+    t0 = st.track.t0; dur = st.track.t1 - st.track.t0; base = `track_${fmtLocal(t0, s.tz).replace(/:/g,'')}`;
+  } else {
+    t0 = c.start + s.offset; dur = c.dur; base = c.name.replace(/\.[^.]+$/, '');
+  }
+  if(s.alphaRange === 'test'){ dur = Math.min(10, dur); base += '_test10s'; }
+  let {W, H} = canvasDims(s); W -= W%2; H -= H%2;
+  const codec = (await MB.canEncodeVideo('vp9', {width:W, height:H})) ? 'vp9' : ((await MB.canEncodeVideo('vp8', {width:W, height:H})) ? 'vp8' : null);
+  if(!codec){ status('这个浏览器不支持 VP9 或 VP8 编码，请用最新版 Chrome 或 Edge'); return; }
+  const pick = await pickDir(); if(pick.abort){ status('已取消'); return; }
+  const outName = `${base}_glass_alpha.webm`;
+  setBusy(true); st.cancel = false; progress(0);
+  if(st.playing) setPlaying(false);
+  let stream = null;
+  try{
+    const miss = await preloadTiles(s, t0, dur);
+    let target;
+    if(pick.dir){ const fh = await pick.dir.getFileHandle(outName, {create:true}); stream = await fh.createWritable(); target = new MB.StreamTarget(stream); }
+    else target = new MB.BufferTarget();
+    const output = new MB.Output({format: new MB.WebMOutputFormat(), target});
+    const source = new MB.VideoSampleSource({codec, bitrate: Math.round(Math.min(16e6, Math.max(3e6, W*H*fps*0.06))), alpha:'keep', keyFrameInterval:2});
+    output.addVideoTrack(source, {frameRate: fps});
+    await output.start();
+    const canvas = document.createElement('canvas'); canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d', {willReadFrequently:true});
+    const N = Math.max(1, Math.floor(dur*fps)), tStart = performance.now();
+    for(let i=0;i<N;i++){
+      if(st.cancel) break;
+      const vt = i/fps;
+      renderComposite(ctx, W, H, null, t0 + vt, vt, s, true, dur);
+      const data = ctx.getImageData(0, 0, W, H).data;   // unpremultiplied RGBA keeps soft glass edges clean
+      const sample = new MB.VideoSample(data, {format:'RGBA', codedWidth:W, codedHeight:H, timestamp:vt, duration:1/fps});
+      await source.add(sample); sample.close();
+      if(i % 10 === 0){
+        progress(i/N);
+        const el = (performance.now()-tStart)/1000, eta = i ? el/i*(N-i) : 0;
+        status(`导出透明叠加层：${i} / ${N} 帧，约剩 ${Math.ceil(eta)} 秒`);
+        await sleep(0);
+      }
+    }
+    if(st.cancel){ await output.cancel(); status('已取消'); }
+    else {
+      await output.finalize();
+      if(!pick.dir) download(new Blob([target.buffer], {type:'video/webm'}), outName);
+      status(`${outName} 已完成：${W}×${H}，${fps} fps，${fmtDur(dur)}${miss ? `，${miss} 块底图未加载` : ''}`);
+    }
+  }catch(err){
+    console.error(err);
+    status('导出失败：' + (err && err.message || err) + (String(err).includes('ecurity') || String(err).includes('tainted') ? '（底图跨域受限，请换底图或选“无底图”）' : ''));
+    if(stream){ try{ await stream.abort(); }catch(e){} }
+  }
+  setBusy(false); requestRender();
+};
+
+/* ---------- composited export (MP4 with audio) ---------- */
+async function prepareAudio(file, dur){
+  if(!('AudioEncoder' in window) || file.size > 1.5e9) return null;
+  const buf = await new OfflineAudioContext(2, 1, 48000).decodeAudioData(await file.arrayBuffer());
+  const ch = Math.min(2, buf.numberOfChannels), sr = buf.sampleRate;
+  for(const [codec, mux] of [['mp4a.40.2','aac'], ['opus','opus']]){
+    const cfg = {codec, sampleRate:sr, numberOfChannels:ch, bitrate:192000};
+    try{ const r = await AudioEncoder.isConfigSupported(cfg); if(r.supported) return {buf, ch, sr, cfg, mux, len:Math.min(buf.length, Math.floor(dur*sr))}; }catch(e){}
+  }
+  return null;
+}
+async function exportClip(c, dir, idx, total){
+  const s = withClipFade(S(), c), fps = s.fps;
+  if(c.start == null) throw new Error('缺少开拍时间');
+  const miss = await preloadTiles(s, c.start + s.offset, c.dur);
+  const {W, H} = outDims(c, s);
+  const v = document.createElement('video'); v.muted = true; v.preload = 'auto';
+  await new Promise((res, rej)=>{ v.onloadeddata = res; v.onerror = ()=>rej(new Error('视频无法解码')); v.src = c.url; });
+  const canvas = document.createElement('canvas'); canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  let au = null;
+  if(s.keepAudio){ status(`读取 ${c.name} 的音频…`); try{ au = await prepareAudio(c.file, c.dur); }catch(e){ au = null; } }
+  const bitrate = Math.round(Math.min(60e6, Math.max(6e6, W*H*fps*0.2)));
+  let vcfg = null;
+  for(const codec of ['avc1.640034','avc1.640033','avc1.4d0034','avc1.42e034','avc1.640028','avc1.42001f']){
+    const cfg = {codec, width:W, height:H, bitrate, framerate:fps};
+    try{ const r = await VideoEncoder.isConfigSupported(cfg); if(r.supported){ vcfg = cfg; break; } }catch(e){}
+  }
+  if(!vcfg) throw new Error(`浏览器不支持 ${W}×${H} 的 H.264 编码，请把分辨率改为 1080p`);
+  const outName = c.name.replace(/\.[^.]+$/, '') + '_glass.mp4';
+  let stream = null, target;
+  if(dir){ const fh = await dir.getFileHandle(outName, {create:true}); stream = await fh.createWritable(); target = new Mp4Muxer.FileSystemWritableFileStreamTarget(stream); }
+  else target = new Mp4Muxer.ArrayBufferTarget();
+  const muxer = new Mp4Muxer.Muxer({
+    target, video:{codec:'avc', width:W, height:H},
+    ...(au ? {audio:{codec:au.mux, numberOfChannels:au.ch, sampleRate:au.sr}} : {}),
+    fastStart: dir ? false : 'in-memory', firstTimestampBehavior:'offset'
+  });
+  let err = null;
+  const venc = new VideoEncoder({output:(ch,m)=>muxer.addVideoChunk(ch,m), error:e=>{ err = e; }});
+  venc.configure(vcfg);
+  let aenc = null, apos = 0;
+  if(au){ aenc = new AudioEncoder({output:(ch,m)=>muxer.addAudioChunk(ch,m), error:e=>{ err = e; }}); aenc.configure(au.cfg); }
+  const feedAudio = until=>{
+    if(!aenc) return;
+    const end = Math.min(au.len, Math.floor(until*au.sr));
+    while(apos < end){
+      const n = Math.min(4096, end-apos), data = new Float32Array(n*au.ch);
+      for(let ch=0; ch<au.ch; ch++) data.set(au.buf.getChannelData(ch).subarray(apos, apos+n), ch*n);
+      const ad = new AudioData({format:'f32-planar', sampleRate:au.sr, numberOfFrames:n, numberOfChannels:au.ch, timestamp:Math.round(apos/au.sr*1e6), data});
+      aenc.encode(ad); ad.close(); apos += n;
+    }
+  };
+  const N = Math.max(1, Math.floor(c.dur*fps)), t0 = performance.now();
+  for(let i=0;i<N;i++){
+    if(st.cancel) break;
+    if(err) throw err;
+    const vt = i/fps;
+    await seekTo(v, Math.min(c.dur-0.001, (i+0.25)/fps));
+    renderComposite(ctx, W, H, v, trackTime(c, vt, s), vt, s, false, c.dur);
+    const vf = new VideoFrame(canvas, {timestamp:Math.round(vt*1e6), duration:Math.round(1e6/fps)});
+    venc.encode(vf, {keyFrame: i % (fps*2) === 0}); vf.close();
+    feedAudio(vt + 0.5);
+    while(venc.encodeQueueSize > 6 || (aenc && aenc.encodeQueueSize > 16)) await sleep(1);
+    if(i % 10 === 0){
+      progress((idx + i/N)/total);
+      const el = (performance.now()-t0)/1000, eta = i ? el/i*(N-i) : 0;
+      status(`${total>1?`第 ${idx+1}/${total} 个，`:''}${c.name}：${i} / ${N} 帧，约剩 ${Math.ceil(eta)} 秒`);
+    }
+  }
+  if(st.cancel){
+    try{ venc.close(); if(aenc) aenc.close(); }catch(e){}
+    if(stream){ try{ await stream.abort(); }catch(e){} }
+    return false;
+  }
+  feedAudio(N/fps);
+  await venc.flush(); if(aenc) await aenc.flush();
+  venc.close(); if(aenc) aenc.close();
+  if(err) throw err;
+  muxer.finalize();
+  if(stream) await stream.close();
+  else download(new Blob([target.buffer], {type:'video/mp4'}), outName);
+  status(`${outName} 已完成${au ? '' : '（未包含音频）'}${miss ? `，${miss} 块底图未加载` : ''}`);
+  return true;
+}
+async function exportClips(list){
+  if(st.busy) return;
+  if(!st.track){ status('请先载入 GPX'); return; }
+  if(!list.length){ status('合成模式需要先添加视频'); return; }
+  if(!('VideoEncoder' in window) || !window.Mp4Muxer){ status('需要最新版 Chrome 或 Edge，并保持联网以加载编码组件'); return; }
+  await fontsReady();
+  const pick = await pickDir(); if(pick.abort){ status('已取消'); return; }
+  if(st.playing) setPlaying(false);
+  setBusy(true); st.cancel = false; progress(0);
+  let ok = 0;
+  for(let i=0;i<list.length;i++){
+    if(st.cancel) break;
+    try{ if(await exportClip(list[i], pick.dir, i, list.length)) ok++; }
+    catch(err){ console.error(err); status(`${list[i].name} 导出失败：${err && err.message || err}`); await sleep(2500); }
+  }
+  if(st.cancel) status('已取消');
+  else if(list.length > 1) status(`全部完成：${ok} / ${list.length} 个片段`);
+  setBusy(false); requestRender();
+}
+$('exportCur').onclick = ()=>{ const c = curClip(); exportClips(c ? [c] : []); };
+$('exportAll').onclick = ()=>exportClips(st.clips.slice());
+
+$('png').onclick = ()=>{
+  const s = S(), c = curClip(), {W, H} = canvasDims(s), alpha = s.mode === 'alpha';
+  let src = null, t = st.t, u = st.track ? st.t - st.track.t0 : 0;
+  if(c){ src = pv.readyState >= 2 ? pv : null; t = c.start != null ? trackTime(c, st.vt, s) : t; u = st.vt; }
+  const canvas = document.createElement('canvas'); canvas.width = W; canvas.height = H;
+  renderComposite(canvas.getContext('2d'), W, H, src, t, u, s, alpha, c ? c.dur : (st.track ? st.track.t1 - st.track.t0 : 0));
+  canvas.toBlob(b=>download(b, (c ? c.name.replace(/\.[^.]+$/,'') : 'overlay') + (alpha ? '_alpha.png' : '_glass.png')), 'image/png');
+};
+
+/* ---------- grouped settings layout ---------- */
+const ICON_PLAY = '<svg viewBox="0 0 24 24"><path d="M7.5 4.8c0-.9 1-1.5 1.8-1l10.4 6.4c.8.5.8 1.6 0 2.1L9.3 18.7c-.8.5-1.8-.1-1.8-1z"/></svg>';
+const ICON_PAUSE = '<svg viewBox="0 0 24 24"><rect x="6" y="4.5" width="4.2" height="15" rx="1.4"/><rect x="13.8" y="4.5" width="4.2" height="15" rx="1.4"/></svg>';
+function setPlayIcon(on){ const b = $('play'); b.innerHTML = on ? ICON_PAUSE : ICON_PLAY; b.setAttribute('aria-label', on ? '暂停' : '播放'); }
+setPlayIcon(false);
+// regroup each section into inset cards: headings stay outside, hints become footers
+document.querySelectorAll('aside section').forEach(sec=>{
+  const kids = [...sec.children]; let card = null;
+  const take = el=>{ if(!card){ card = document.createElement('div'); card.className = 'card'; sec.appendChild(card); } card.appendChild(el); };
+  for(const el of kids){
+    if(el.tagName === 'H2' || el.tagName === 'H3' || el.classList.contains('hint')){ sec.appendChild(el); card = null; continue; }
+    if(el.classList.contains('checks')){
+      const extra = [...el.classList].filter(c=>c !== 'checks');
+      [...el.querySelectorAll(':scope > label')].forEach(l=>{ l.classList.add('toggleRow', ...extra); take(l); });
+      el.remove(); continue;
+    }
+    if(el.type === 'file' || el.hidden){ sec.appendChild(el); continue; }
+    take(el);
+  }
+});
+let cardsQueued = false;
+function updateCards(){
+  cardsQueued = false;
+  document.querySelectorAll('aside .card').forEach(card=>{
+    let first = null;
+    for(const ch of card.children){
+      ch.classList.remove('firstVis');
+      if(!first && getComputedStyle(ch).display !== 'none') first = ch;
+    }
+    if(first) first.classList.add('firstVis');
+    card.hidden = !first;
+  });
+}
+function queueCards(){ if(!cardsQueued){ cardsQueued = true; requestAnimationFrame(updateCards); } }
+new MutationObserver(queueCards).observe(document.body, {attributes:true, attributeFilter:['class','style','hidden'], subtree:true, childList:true, characterData:true});
+updateCards();
+// liquid glass segmented control for the output mode
+(function(){
+  const box = document.querySelector('.modeBox'); if(!box) return;
+  const thumb = document.createElement('span'); thumb.className = 'segThumb'; box.prepend(thumb);
+  const place = ()=>{ const l = box.querySelector('label:has(input:checked)') || box.querySelector('label'); thumb.style.left = l.offsetLeft + 'px'; thumb.style.width = l.offsetWidth + 'px'; };
+  box.addEventListener('change', place);
+  box.addEventListener('pointerdown', ()=>box.classList.add('pressing'));
+  ['pointerup','pointercancel','pointerleave'].forEach(ev=>box.addEventListener(ev, ()=>box.classList.remove('pressing')));
+  window.addEventListener('resize', place);
+  window._placeSeg = place;
+  requestAnimationFrame(place);
+})();
+
+/* ---------- resizable sidebar (max half the page) and a preview that always fits ---------- */
+(function(){
+  const app = document.querySelector('.app'), rz = $('resizer'), MIN = 320;
+  const clampSide = w => Math.round(Math.max(MIN, Math.min(window.innerWidth/2, w)));
+  let side = 420;
+  try{ const v = parseFloat(localStorage.getItem('llb-side')); if(isFinite(v)) side = v; }catch(e){}
+  const apply = ()=>{ side = clampSide(side); app.style.setProperty('--side', side + 'px'); fitCanvas(); if(window._placeSeg) window._placeSeg(); };
+  rz.addEventListener('pointerdown', e=>{
+    e.preventDefault(); rz.setPointerCapture(e.pointerId);
+    rz.classList.add('dragging'); document.body.classList.add('resizing');
+    const move = ev=>{ side = clampSide(ev.clientX); apply(); };
+    const up = ()=>{
+      rz.classList.remove('dragging'); document.body.classList.remove('resizing');
+      rz.removeEventListener('pointermove', move); rz.removeEventListener('pointerup', up); rz.removeEventListener('pointercancel', up);
+      try{ localStorage.setItem('llb-side', String(side)); }catch(e){}
+    };
+    rz.addEventListener('pointermove', move); rz.addEventListener('pointerup', up); rz.addEventListener('pointercancel', up);
+  });
+  rz.addEventListener('dblclick', ()=>{ side = 420; apply(); try{ localStorage.setItem('llb-side', '420'); }catch(e){} });
+  window.addEventListener('resize', apply);
+  apply();
+})();
+function fitCanvas(){
+  const stage = document.querySelector('.stage'); if(!stage) return;
+  const cs = getComputedStyle(stage);
+  const aw = stage.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+  const ah = stage.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+  if(aw <= 0 || ah <= 0 || !cv.width) return;
+  const k = Math.min(aw/cv.width, ah/cv.height);
+  const w = Math.floor(cv.width*k) + 'px', h = Math.floor(cv.height*k) + 'px';
+  if(cv.style.width !== w) cv.style.width = w;
+  if(cv.style.height !== h) cv.style.height = h;
+}
+new ResizeObserver(fitCanvas).observe(document.querySelector('.stage'));
+
+/* ---------- slider + number box ---------- */
+function decimals(step){ const t = String(step); return t.includes('.') ? t.split('.')[1].length : 0; }
+function fmtRange(r){ return (+r.value).toFixed(decimals(r.step || 1)); }
+function setFill(r){ const lo = +r.min || 0, hi = +r.max || 100; r.style.setProperty('--p', `${((+r.value - lo)/(hi - lo || 1))*100}%`); }
+function syncRangeBoxes(){ document.querySelectorAll('aside input[type=range]').forEach(r=>{ setFill(r); if(r._num && document.activeElement !== r._num) r._num.value = fmtRange(r); }); }
+document.querySelectorAll('aside input[type=range]').forEach(r=>{
+  const wrap = document.createElement('span'); wrap.className = 'rangeWrap';
+  r.parentNode.insertBefore(wrap, r); wrap.appendChild(r);
+  const n = document.createElement('input'); n.type = 'number'; n.className = 'rangeNum';
+  n.min = r.min; n.max = r.max; n.step = r.step || 1; n.value = fmtRange(r);
+  wrap.appendChild(n); r._num = n;
+  r.addEventListener('input', ()=>{ n.value = fmtRange(r); setFill(r); }); setFill(r);
+  const commit = ()=>{
+    const v = parseFloat(n.value);
+    if(!isFinite(v)){ n.value = fmtRange(r); return; }
+    r.value = Math.min(+r.max, Math.max(+r.min, v));
+    n.value = fmtRange(r);
+    r.dispatchEvent(new Event('input', {bubbles:true})); r.dispatchEvent(new Event('change', {bubbles:true}));
+  };
+  n.addEventListener('change', commit);
+  n.addEventListener('keydown', e=>{ if(e.key === 'Enter'){ e.preventDefault(); commit(); n.blur(); } });
+  n.addEventListener('input', ()=>{ const v = parseFloat(n.value); if(isFinite(v) && v >= +r.min && v <= +r.max){ r.value = v; setFill(r); requestRender(); } });
+});
+
+/* ---------- templates ---------- */
+const APP_NAME = 'Liquid-Location-Bar', APP_VERSION = '0.8.1';
+$('ver').textContent = APP_VERSION;
+const TPL_SKIP = new Set(['fileGpx','fileVid','clipSel','clipStart','tplFile','tplText','fontFile']);
+function tplFields(){ return [...document.querySelectorAll('aside input[id], aside select[id], aside textarea[id]')].filter(el=>!TPL_SKIP.has(el.id) && el.type !== 'file'); }
+function readField(el){
+  if(el.type === 'checkbox') return el.checked;
+  if(el.type === 'range' || el.type === 'number') return el.value === '' ? null : +el.value;
+  return el.value;
+}
+function buildTemplate(){
+  const s = S(), settings = {};
+  settings.mode = s.mode;
+  for(const el of tplFields()) if(el.id !== 'places') settings[el.id] = readField(el);
+  const clips = {};
+  for(const c of st.clips) if(c.start != null) clips[c.name] = fmtLocal(c.start, s.tz);
+  const now = new Date();
+  return {
+    app: APP_NAME, version: APP_VERSION,
+    saved: `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${now.toTimeString().slice(0,8)}`,
+    note: 'Liquid-Location-Bar template. Plain text JSON: safe to edit by hand. Unknown keys are ignored; missing keys keep the current value.',
+    settings,
+    places: $('places').value.split('\n').filter(l=>l.trim()),
+    clipStarts: clips,
+    clipFades: Object.fromEntries(st.clips.filter(c=>c.fade).map(c=>[c.name, c.fade])),
+    sharedFade: st.sharedFade || null
+  };
+}
+function templateText(){ return JSON.stringify(buildTemplate(), null, 2); }
+function applyTemplate(text){
+  let t;
+  try{ t = JSON.parse(text); }catch(e){ throw new Error('不是有效的模板文本（JSON 格式有误）'); }
+  if(!t || typeof t !== 'object' || !t.settings) throw new Error('文件里没有找到模板设置');
+  const S0 = t.settings; let n = 0, skipped = 0;
+  if(S0.font === 'gilroy') S0.font = 'custom';   // templates saved before v0.8.1
+  if(S0.mode){ const r = document.querySelector(`input[name=mode][value="${S0.mode}"]`); if(r){ r.checked = true; n++; } }
+  if('tz' in S0 && $('tz')) $('tz').value = S0.tz;
+  for(const [id, v] of Object.entries(S0)){
+    if(id === 'mode' || TPL_SKIP.has(id)) continue;
+    const el = document.getElementById(id);
+    if(!el || !el.closest('aside') || el.type === 'file'){ skipped++; continue; }
+    if(el.type === 'checkbox') el.checked = !!v;
+    else if(el.tagName === 'SELECT'){ if([...el.options].some(o=>o.value === String(v))) el.value = String(v); else { skipped++; continue; } }
+    else if(v != null) el.value = v;
+    n++;
+  }
+  if(Array.isArray(t.places)) $('places').value = t.places.join('\n');
+  else if(typeof t.places === 'string') $('places').value = t.places;
+  st.pendingStarts = (t.clipStarts && typeof t.clipStarts === 'object') ? {...t.clipStarts} : {};
+  st.pendingFades = (t.clipFades && typeof t.clipFades === 'object') ? {...t.clipFades} : {};
+  if(t.sharedFade && typeof t.sharedFade === 'object') st.sharedFade = {...t.sharedFade};
+  for(const c of st.clips) if(st.pendingFades[c.name]) c.fade = {...st.pendingFades[c.name]};
+  if($('fadeScope').value === 'perClip'){ if(!st.sharedFade) st.sharedFade = readFadeUI(); const cc = curClip(); if(cc) writeFadeUI(ensureClipFade(cc)); }
+  const tz = parseFloat($('tz').value)||0; let matched = 0;
+  for(const c of st.clips){
+    const v = st.pendingStarts[c.name];
+    if(v){ const r = parseLocal(v, tz, c.start != null ? c.start : (st.track ? st.track.t0 : null)); if(r != null){ c.start = r; c.how = '来自模板'; matched++; } }
+  }
+  applyPlaces(); refreshClips(); syncRangeBoxes(); if(window._placeSeg) window._placeSeg(); requestRender();
+  const nClips = Object.keys(st.pendingStarts).length;
+  return `已应用模板${t.version ? `（v${t.version}${t.saved ? `，保存于 ${t.saved}` : ''}）` : ''}：${n} 项设置${skipped ? `，${skipped} 项不适用已跳过` : ''}${nClips ? `；模板记录了 ${nClips} 段视频的开拍时间，已匹配 ${matched} 段，之后拖入的同名视频也会自动使用` : ''}`;
+}
+function tplInfo(m, bad){ $('tplInfo').textContent = m; $('tplInfo').style.color = bad ? '#b3261e' : ''; }
+$('tplSave').onclick = ()=>{
+  const now = new Date(), stamp = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}-${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
+  download(new Blob([templateText()], {type:'text/plain;charset=utf-8'}), `Liquid-Location-Bar_${stamp}.llb`);
+  tplInfo('模板已导出。下次点“载入模板”选择这个文件即可恢复全部设置。');
+};
+$('tplLoad').onclick = ()=>$('tplFile').click();
+$('tplFile').onchange = e=>{
+  const f = e.target.files[0]; e.target.value = ''; if(!f) return;
+  const r = new FileReader();
+  r.onload = ()=>{ try{ tplInfo(applyTemplate(r.result)); if($('tplBox').style.display !== 'none') $('tplText').value = templateText(); }catch(err){ tplInfo('载入失败：' + err.message, true); } };
+  r.readAsText(f);
+};
+$('tplToggle').onclick = ()=>{
+  const open = $('tplBox').style.display === 'none';
+  $('tplBox').style.display = open ? 'block' : 'none';
+  $('tplToggle').textContent = open ? '收起文本' : '查看文本';
+  if(open) $('tplText').value = templateText();
+};
+$('tplRefresh').onclick = ()=>{ $('tplText').value = templateText(); tplInfo('文本已更新为当前设置'); };
+$('tplApply').onclick = ()=>{ try{ tplInfo(applyTemplate($('tplText').value)); }catch(err){ tplInfo('应用失败：' + err.message, true); } };
+$('tplCopy').onclick = async ()=>{
+  try{ await navigator.clipboard.writeText($('tplText').value); tplInfo('已复制到剪贴板'); }
+  catch(e){ $('tplText').select(); tplInfo('请按 Ctrl+C 或 ⌘C 复制已选中的文本'); }
+};
+
+/* ---------- user supplied font ---------- */
+// No font is bundled: the user picks their own font files, which stay on this computer.
+function sfntTag(dv, o){ return String.fromCharCode(dv.getUint8(o), dv.getUint8(o+1), dv.getUint8(o+2), dv.getUint8(o+3)); }
+function ttcFonts(buf){
+  const dv = new DataView(buf), n = dv.getUint32(8), out = [];
+  for(let i=0;i<n;i++){
+    const off = dv.getUint32(12 + 4*i), nt = dv.getUint16(off + 4), recs = [];
+    let size = 12 + 16*nt;
+    for(let j=0;j<nt;j++){
+      const r = off + 12 + 16*j;
+      const rec = {tag:dv.getUint32(r), sum:dv.getUint32(r+4), off:dv.getUint32(r+8), len:dv.getUint32(r+12)};
+      recs.push(rec); size += (rec.len + 3) & ~3;
+    }
+    const ob = new ArrayBuffer(size), od = new DataView(ob), ou = new Uint8Array(ob), src = new Uint8Array(buf);
+    ou.set(src.subarray(off, off + 12), 0);
+    let p = 12 + 16*nt;
+    recs.forEach((rec, j)=>{
+      const r = 12 + 16*j;
+      od.setUint32(r, rec.tag); od.setUint32(r+4, rec.sum); od.setUint32(r+8, p); od.setUint32(r+12, rec.len);
+      ou.set(src.subarray(rec.off, rec.off + rec.len), p); p += (rec.len + 3) & ~3;
+    });
+    out.push(ob);
+  }
+  return out;
+}
+function sfntInfo(buf){
+  const dv = new DataView(buf), tag = sfntTag(dv, 0);
+  if(!(dv.getUint32(0) === 0x00010000 || tag === 'OTTO' || tag === 'true')) return null;
+  const nt = dv.getUint16(4), tables = {};
+  for(let j=0;j<nt;j++){ const r = 12 + 16*j; tables[sfntTag(dv, r)] = {off:dv.getUint32(r+8), len:dv.getUint32(r+12)}; }
+  const info = {weight:400, italic:false, family:'', sub:''};
+  if(tables['OS/2']){ const o = tables['OS/2'].off; info.weight = dv.getUint16(o+4) || 400; info.italic = !!(dv.getUint16(o+62) & 1); }
+  if(tables.name){
+    const o = tables.name.off, cnt = dv.getUint16(o+2), so = o + dv.getUint16(o+4), names = {};
+    for(let i=0;i<cnt;i++){
+      const r = o + 6 + 12*i, plat = dv.getUint16(r), id = dv.getUint16(r+6), len = dv.getUint16(r+8), sOff = dv.getUint16(r+10);
+      if(![1,2,16,17].includes(id) || (names[id] && plat !== 3)) continue;
+      let txt = '';
+      if(plat === 3 || plat === 0){ for(let k=0;k<len;k+=2) txt += String.fromCharCode(dv.getUint16(so + sOff + k)); }
+      else { for(let k=0;k<len;k++) txt += String.fromCharCode(dv.getUint8(so + sOff + k)); }
+      names[id] = txt;
+    }
+    info.family = names[16] || names[1] || ''; info.sub = names[17] || names[2] || '';
+  }
+  return info;
+}
+function guessFace(name){
+  const n = name.toLowerCase();
+  const weight = /thin|hairline/.test(n) ? 100 : /(extra|ultra)light/.test(n) ? 200 : /light/.test(n) ? 300 :
+    /semibold|demibold/.test(n) ? 600 : /(extra|ultra)bold/.test(n) ? 800 : /black|heavy/.test(n) ? 900 :
+    /bold/.test(n) ? 700 : /medium/.test(n) ? 500 : 400;
+  return {weight, italic:/italic|oblique/.test(n), family:name.replace(/\.[^.]+$/, '').replace(/[-_ ]?(thin|hairline|extralight|ultralight|light|regular|medium|semibold|demibold|extrabold|ultrabold|bold|black|heavy|italic|oblique)+$/i, ''), sub:''};
+}
+async function loadUserFonts(files){
+  const added = [], families = new Set(); let failed = 0;
+  for(const f of [...document.fonts]) if(f.family.replace(/["']/g, '') === USER_FONT) document.fonts.delete(f);
+  for(const file of files){
+    let buf;
+    try{ buf = await file.arrayBuffer(); }catch(e){ failed++; continue; }
+    const dv = new DataView(buf);
+    const parts = buf.byteLength > 12 && sfntTag(dv, 0) === 'ttcf' ? ttcFonts(buf) : [buf];
+    for(const part of parts){
+      const info = sfntInfo(part) || guessFace(file.name);
+      const face = new FontFace(USER_FONT, part, {weight:String(Math.min(1000, Math.max(1, info.weight))), style: info.italic ? 'italic' : 'normal'});
+      try{ await face.load(); document.fonts.add(face); added.push(info); if(info.family) families.add(info.family); }
+      catch(e){ failed++; }
+    }
+  }
+  const upright = added.filter(i=>!i.italic).length;
+  $('fontStatus').textContent = added.length
+    ? `已载入 ${[...families].join('、') || '自选字体'} · ${added.length} 个字形样式（${upright} 个正体）${failed ? `，${failed} 个无法读取` : ''}`
+    : '没有读取到可用的字体，暂用系统字体';
+  requestRender();
+}
+$('fontPick').onclick = ()=>$('fontFile').click();
+$('fontFile').onchange = e=>{ const fs = [...e.target.files]; e.target.value = ''; if(fs.length){ $('fontStatus').textContent = '正在载入…'; loadUserFonts(fs); } };
+
+async function fontsReady(){ try{ await document.fonts.ready; }catch(e){} }
+fontsReady().then(requestRender);
+refreshClips();
+requestRender();
+</script>
+</body>
+</html>
